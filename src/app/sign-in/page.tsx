@@ -237,6 +237,11 @@ export default function SignInPage() {
                   className={styles.input}
                   required
                 />
+                <div className={styles.formFooter}>
+                  <Link href={ROUTES.forgotPassword} className={styles.footerLink}>
+                    Forgot password?
+                  </Link>
+                </div>
               </div>
 
               <div className={styles.formActions}>

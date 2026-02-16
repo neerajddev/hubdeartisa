@@ -1,0 +1,115 @@
+.pageHeader {
+  padding: var(--spacing-lg) 0;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xs);
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-sm);
+  text-align: left;
+}
+
+.pageDescription {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  text-align: left;
+  max-width: 800px;
+  line-height: 1.7;
+}
+
+.formSection {
+  padding: var(--spacing-xl) 0;
+}
+
+.formContainer {
+  max-width: 600px;
+  background: var(--color-surface);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.notice {
+  padding: 1rem;
+  background-color: rgba(9, 43, 47, 0.08);
+  border: 1px solid rgba(9, 43, 47, 0.2);
+  color: var(--color-primary);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.errorMessage {
+  padding: 1rem;
+  background-color: rgba(211, 47, 47, 0.1);
+  border: 1px solid rgba(211, 47, 47, 0.3);
+  color: #c62828;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.input {
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  font-size: 1rem;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border-radius: var(--radius-sm);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(9, 43, 47, 0.12);
+}
+
+.formActions {
+  margin-top: var(--spacing-sm);
+}
+
+.formFooter {
+  margin-top: var(--spacing-sm);
+}
+
+.footerText {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.footerLink {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .formContainer {
+    max-width: 100%;
+  }
+}

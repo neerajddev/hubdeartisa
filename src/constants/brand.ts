@@ -39,6 +39,8 @@ export const ROUTES = {
   howItWorks: '/how-it-works',
   getStarted: '/get-started',
   signIn: '/sign-in',
+  forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
   dashboard: '/dashboard',
   clientDashboard: '/dashboard/client',
   artistDashboard: '/dashboard/artist',
