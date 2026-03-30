@@ -13,10 +13,3 @@
 .mainContent {
   flex: 1;
 }
-
-/* Desktop: Add left margin for sidebar */
-@media (min-width: 1024px) {
-  .mainWrapper {
-    margin-left: 280px;
-  }
-}

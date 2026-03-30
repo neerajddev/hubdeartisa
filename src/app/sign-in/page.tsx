@@ -262,6 +262,14 @@ export default function SignInPage() {
           </div>
         </div>
       </section>
+
+      <div className={styles.backBar}>
+        <div className="container">
+          <Link href={ROUTES.home} className={styles.backLink}>
+            ← Back to Home
+          </Link>
+        </div>
+      </div>
     </Layout>
   );
 }

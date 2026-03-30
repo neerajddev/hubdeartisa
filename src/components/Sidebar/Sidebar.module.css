@@ -2,7 +2,7 @@
 .hamburger {
   position: fixed;
   top: 1.25rem;
-  right: 1.5rem;
+  left: 1.5rem;
   z-index: 1001;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -175,21 +175,6 @@
   border-color: var(--color-primary);
 }
 
-/* Desktop: Always show sidebar, hide hamburger */
-@media (min-width: 1024px) {
-  .hamburger {
-    display: none;
-  }
-
-  .overlay {
-    display: none;
-  }
-
-  .sidebar {
-    transform: translateX(0);
-  }
-}
-
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .sidebar {
@@ -198,6 +183,6 @@
   
   .hamburger {
     top: 1rem;
-    right: 1rem;
+    left: 1rem;
   }
 }

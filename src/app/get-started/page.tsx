@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '@/components/Layout/Layout';
 import Card from '@/components/Card/Card';
 import Link from 'next/link';
+import { ROUTES } from '@/constants/brand';
 import styles from './page.module.css';
 
 export default function GetStartedPage() {
@@ -76,6 +77,14 @@ export default function GetStartedPage() {
           </div>
         </div>
       </section>
+
+      <div className={styles.backBar}>
+        <div className="container">
+          <Link href={ROUTES.home} className={styles.backLink}>
+            ← Back to Home
+          </Link>
+        </div>
+      </div>
     </Layout>
   );
 }
