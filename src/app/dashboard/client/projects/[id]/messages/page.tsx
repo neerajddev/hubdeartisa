@@ -104,46 +104,66 @@ export default function ClientProjectMessagesPage() {
 
   return (
     <Layout>
-      <div className={styles.pageHeader}>
+      <header className={styles.pageHeader}>
         <div className="container">
-          <button className={styles.backButton} onClick={() => router.back()}>
-            ← Back
-          </button>
-          <h1 className={styles.pageTitle}>Project Messages</h1>
-          <p className={styles.pageDescription}>Keep all communication inside De’Artisa Hub.</p>
+          <button className={styles.backLink} onClick={() => router.back()}>← Dashboard</button>
+          <p className={styles.eyebrow}>Project Messages</p>
+          <h1 className={styles.pageTitle}>Conversation</h1>
+          <p className={styles.pageSubtitle}>Keep all communication inside De’Artisa Hub.</p>
         </div>
-      </div>
+      </header>
 
       <section className={styles.section}>
         <div className="container">
-          <div className={styles.card}>
+          <div className={styles.chatWrap}>
             {loading ? (
-              <p className={styles.notice}>Loading messages...</p>
+              <p className={styles.notice}>Loading messages…</p>
             ) : (
               <div className={styles.messagesList}>
                 {messages.length === 0 && (
-                  <p className={styles.notice}>No messages yet.</p>
+                  <p className={styles.emptyState}>No messages yet. Start the conversation below.</p>
                 )}
-                {messages.map((row) => (
-                  <div key={row.id} className={styles.messageRow}>
-                    <div className={styles.messageBubble}>
-                      <p>{row.message}</p>
-                      <span>{new Date(row.created_at).toLocaleString()}</span>
+                {messages.map((row) => {
+                  const isClient = row.sender_role === 'client';
+                  return (
+                    <div
+                      key={row.id}
+                      className={`${styles.messageRow} ${isClient ? styles.messageRowClient : styles.messageRowArtist}`}
+                    >
+                      <div className={`${styles.bubble} ${isClient ? styles.bubbleClient : styles.bubbleArtist}`}>
+                        <p className={styles.bubbleText}>{row.message}</p>
+                        <span className={styles.bubbleTime}>
+                          {new Date(row.created_at).toLocaleString(undefined, {
+                            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+                          })}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
+
             <div className={styles.composer}>
               <textarea
-                className={styles.textarea}
-                rows={3}
+                className={styles.composerInput}
+                rows={2}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type your message..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                placeholder="Write a message…"
               />
-              <button className={styles.primaryButton} onClick={handleSend} disabled={sending}>
-                {sending ? 'Sending...' : 'Send Message'}
+              <button
+                className={styles.sendBtn}
+                onClick={handleSend}
+                disabled={sending || !newMessage.trim()}
+              >
+                {sending ? 'Sending…' : 'Send →'}
               </button>
             </div>
             {message && <p className={styles.notice}>{message}</p>}

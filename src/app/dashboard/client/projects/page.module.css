@@ -1,8 +1,6 @@
 .pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 3rem) 0 2.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .headerRow {
@@ -38,11 +36,8 @@
 }
 
 .statCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-xs);
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding: var(--spacing-md) 0;
 }
 
 .statLabel {
@@ -68,11 +63,8 @@
 }
 
 .projectCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
   padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -109,34 +101,46 @@
   background: var(--color-primary);
   color: #fff;
   padding: 0.75rem 1.5rem;
-  border-radius: 999px;
-  box-shadow: var(--shadow-xs);
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
+  transition: filter 0.2s;
+}
+
+.primaryButton:hover {
+  filter: brightness(1.12);
 }
 
 .secondaryButton {
   background: var(--color-primary);
   color: #fff;
   padding: 0.6rem 1.25rem;
-  border-radius: 12px;
+  border-radius: 8px;
   text-decoration: none;
+  transition: filter 0.2s;
+}
+
+.secondaryButton:hover {
+  filter: brightness(1.12);
 }
 
 .ghostButton {
   background: transparent;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-subtle);
   color: var(--color-text-primary);
   padding: 0.6rem 1.25rem;
-  border-radius: 12px;
+  border-radius: 8px;
   text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.ghostButton:hover {
+  border-color: var(--color-primary);
 }
 
 .emptyState {
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border-subtle);
   padding: var(--spacing-lg);
-  background: var(--color-surface-muted);
   grid-column: 1 / -1;
 }
 

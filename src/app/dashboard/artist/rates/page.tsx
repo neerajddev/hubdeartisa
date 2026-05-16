@@ -108,8 +108,8 @@ export default function ArtistRatesPage() {
             <div className={styles.rateHeader}>
               <span>Specialty</span>
               <span>Rate Type</span>
-              <span>Min (USD)</span>
-              <span>Max (USD)</span>
+              <span>Min (INR)</span>
+              <span>Max (INR)</span>
             </div>
             {specialties.map((specialty) => (
               <div key={specialty} className={styles.rateRow}>

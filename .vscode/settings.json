@@ -1,0 +1,41 @@
+{
+  // ── File watcher exclusions (reduces inotify/FSEvents load) ──────────────
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/out/**": true,
+    "**/build/**": true,
+    "**/dist/**": true
+  },
+
+  // ── Search exclusions (speeds up Cmd+Shift+F) ───────────────────────────
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/.git": true
+  },
+
+  // ── Explorer exclusions (hides clutter from the sidebar) ─────────────────
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/build": true,
+    "**/dist": true
+  },
+
+  // ── TypeScript / JS language server ──────────────────────────────────────
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.disableAutomaticTypeAcquisition": false,
+
+  // ── Copilot context exclusions ───────────────────────────────────────────
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.promptFiles": true
+}

@@ -118,7 +118,7 @@ export default function ClientProjectsPage() {
                     <p className={styles.projectStatus}>{project.status.replace('_', ' ')}</p>
                     <h3 className={styles.projectTitle}>{project.title}</h3>
                     <div className={styles.projectMeta}>
-                      <span>Max Budget: ${project.budget_max}</span>
+                      <span>Max Budget: ₹{project.budget_max}</span>
                       <span>Deadline: {project.deadline || 'Flexible'}</span>
                     </div>
                   </div>

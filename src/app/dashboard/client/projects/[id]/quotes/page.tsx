@@ -14,7 +14,6 @@ type Quote = {
   notes: string | null;
   status: string;
   services?: Array<{ name: string; rate: number }>;
-  pdf_url?: string | null;
   artist_profiles: Array<{
     id: string;
     full_name: string;
@@ -30,7 +29,7 @@ export default function ClientProjectQuotesPage() {
   const [projectTitle, setProjectTitle] = useState('');
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
-  const currencySymbol = '$';
+  const currencySymbol = '₹';
 
   useEffect(() => {
     const loadQuotes = async () => {
@@ -52,7 +51,7 @@ export default function ClientProjectQuotesPage() {
 
       const { data, error } = await supabase
         .from('project_quotes')
-        .select('id, amount, timeline_days, notes, status, services, pdf_url, artist_profiles(id, full_name, country)')
+        .select('id, amount, timeline_days, notes, status, services, artist_profiles(id, full_name, country)')
         .eq('project_id', projectId)
         .order('created_at', { ascending: false });
 
@@ -93,13 +92,11 @@ export default function ClientProjectQuotesPage() {
       return;
     }
 
+    // Only record the chosen quote — status stays 'open' until payment confirms.
+    // selected_artist_id is set by the payment verification route after signature check.
     const { error } = await supabase
       .from('projects')
-      .update({
-        selected_artist_id: artistProfile.id,
-        selected_quote_id: quote.id,
-        status: 'assigned',
-      })
+      .update({ selected_quote_id: quote.id })
       .eq('id', projectId);
 
     if (error) {
@@ -107,101 +104,61 @@ export default function ClientProjectQuotesPage() {
       return;
     }
 
-    const { data: artistDetails } = await supabase
-      .from('artist_profiles')
-      .select('user_id, email, phone')
-      .eq('id', artistProfile.id)
-      .single();
-
-    if (artistDetails?.user_id) {
-      await fetch('/api/notifications/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: artistDetails.user_id,
-          email: artistDetails.email,
-          whatsapp: artistDetails.phone,
-          message: `You have been selected for a project. Please review and accept the agreement in your dashboard.`,
-        }),
-      });
-    }
-
-    setMessage('Artist selected. Please review the agreement next.');
-    router.push(ROUTES.clientProjectAgreement(projectId));
+    router.push(ROUTES.clientProjectPayment(projectId));
   };
 
   return (
     <Layout>
-      <div className={styles.pageHeader}>
+      <header className={styles.pageHeader}>
         <div className="container">
-          <button className={styles.backButton} onClick={() => router.back()}>
-            ← Back
-          </button>
+          <button className={styles.backLink} onClick={() => router.back()}>← Dashboard</button>
+          <p className={styles.eyebrow}>Project Quotes</p>
           <h1 className={styles.pageTitle}>Quotes for {projectTitle}</h1>
-          <p className={styles.pageDescription}>Compare offers and choose your preferred artist.</p>
-          <button
-            className={styles.messageButton}
-            onClick={() => router.push(ROUTES.clientProjectMessages(projectId))}
-          >
-            Open Messages
-          </button>
+          <p className={styles.metaHint}>Compare offers and choose your preferred artist.</p>
         </div>
-      </div>
+      </header>
 
       <section className={styles.section}>
         <div className="container">
           {message && <p className={styles.notice}>{message}</p>}
           {loading ? (
-            <p className={styles.notice}>Loading quotes...</p>
+            <p className={styles.notice}>Loading quotes…</p>
           ) : (
-            <div className={styles.quoteGrid}>
+            <div className={styles.quoteList}>
               {quotes.length === 0 && (
-                <div className={styles.emptyState}>
-                  <h2>No quotes yet</h2>
-                  <p>Artists will appear here once they respond to your brief.</p>
-                </div>
+                <p className={styles.emptyState}>No quotes yet. Artists will appear here once they respond to your brief.</p>
               )}
               {quotes.map((quote) => {
                 const artist = quote.artist_profiles?.[0];
                 return (
-                  <article key={quote.id} className={styles.quoteCard}>
-                    <div className={styles.cardHeader}>
-                      <div>
-                        <p className={styles.quoteArtist}>{artist?.full_name || 'Artist'}</p>
-                        <p className={styles.quoteMeta}>Location: {artist?.country || 'Remote'}</p>
-                      </div>
-                      <span className={styles.quoteBadge}>{quote.status}</span>
+                  <article key={quote.id} className={styles.quoteRow}>
+                    <div className={styles.quoteLeft}>
+                      <p className={styles.artistName}>{artist?.full_name || 'Artist'}</p>
+                      <p className={styles.artistLocation}>{artist?.country || 'Remote'}</p>
                     </div>
-                    <div className={styles.quoteMain}>
-                      <h3 className={styles.quoteAmount}>{currencySymbol}{quote.amount}</h3>
-                      <p className={styles.quoteMeta}>Timeline: {quote.timeline_days} days</p>
+
+                    <div className={styles.quoteCenter}>
+                      <p className={styles.quoteAmount}>{currencySymbol}{quote.amount.toLocaleString()}</p>
+                      <p className={styles.quoteSub}>{quote.timeline_days} days</p>
                     </div>
+
                     {quote.services && quote.services.length > 0 && (
-                      <div className={styles.serviceList}>
-                        <h4>Services</h4>
-                        <ul>
-                          {quote.services.map((service, idx) => (
-                            <li key={`${service.name}-${idx}`}>
-                              {service.name}: {currencySymbol}{service.rate}
-                            </li>
-                          ))}
-                        </ul>
+                      <div className={styles.quoteServices}>
+                        {quote.services.map((s, i) => (
+                          <span key={`${s.name}-${i}`} className={styles.serviceTag}>
+                            {s.name}
+                          </span>
+                        ))}
                       </div>
                     )}
+
                     {quote.notes && (
-                      <div className={styles.quoteNotes}>
-                        <h4>Artist Notes</h4>
-                        <p>{quote.notes}</p>
-                      </div>
+                      <p className={styles.quoteNotes}>{quote.notes}</p>
                     )}
-                    {quote.pdf_url && (
-                      <a className={styles.downloadLink} href={quote.pdf_url} target="_blank" rel="noreferrer">
-                        Download Quote PDF
-                      </a>
-                    )}
-                    <div className={styles.cardActions}>
-                      <button className={styles.primaryButton} onClick={() => handleSelect(quote)}>
-                        Select Artist
+
+                    <div className={styles.quoteActions}>
+                      <button className={styles.selectBtn} onClick={() => handleSelect(quote)}>
+                        Select Artist →
                       </button>
                     </div>
                   </article>

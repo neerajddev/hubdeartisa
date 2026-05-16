@@ -1,94 +1,416 @@
+/* ═══════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════════ */
 .pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 3rem) 0 2.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.backButton {
+.backLink {
+  display: inline-block;
   background: transparent;
   border: none;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--color-text-secondary);
   cursor: pointer;
-  margin-bottom: var(--spacing-sm);
+  padding: 0;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
+}
+.backLink:hover { color: var(--color-primary); }
+
+.eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 0 0 0.5rem;
 }
 
 .pageTitle {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-sm);
-  text-align: left;
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 0 0.75rem;
 }
 
-.pageDescription {
-  font-size: 1.125rem;
+.pageSubtitle {
+  font-size: 0.9rem;
   color: var(--color-text-secondary);
-  text-align: left;
-  max-width: 800px;
+  margin: 0;
+  max-width: 540px;
   line-height: 1.7;
 }
 
+/* ═══════════════════════════════════════════
+   SECTION
+══════════════════════════════════════════════ */
 .section {
-  padding: var(--spacing-xl) 0;
+  padding: 4rem 0 7rem;
 }
 
-.formCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
+/* ═══════════════════════════════════════════
+   FORM BODY — centered column, no card
+══════════════════════════════════════════════ */
+.formBody {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
-.formGrid {
+/* ═══════════════════════════════════════════
+   FIELD GROUPS
+══════════════════════════════════════════════ */
+.fieldRow {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
 }
 
-.formGroup {
+.fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
-.formGroupFull {
-  grid-column: span 2;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.label {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--color-primary);
-}
-
-.input,
-.textarea {
-  padding: 0.875rem 1rem;
-  border: 1px solid var(--color-border);
-  font-size: 1rem;
-  font-family: var(--font-body);
-  color: var(--color-text-primary);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-sm);
-}
-
-.textarea {
-  resize: vertical;
-}
-
-.notice {
-  margin-top: var(--spacing-sm);
+.fieldLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
-}
-
-.helpText {
   margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
 }
+
+.fieldHint {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.65;
+}
+
+/* Minimalist bottom-border inputs */
+.fieldInput,
+.fieldTextarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 0.55rem 0 0.65rem;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  color: var(--color-primary);
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.fieldInput::placeholder,
+.fieldTextarea::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+.fieldInput:focus,
+.fieldTextarea:focus {
+  border-bottom-color: var(--color-primary);
+}
+
+.fieldTextarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+
+/* Budget prefix */
+.budgetWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.budgetSymbol {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  padding-bottom: 0.1rem;
+}
+
+/* Section divider */
+.sectionDivider {
+  border: none;
+  border-top: 1px solid var(--color-border-subtle);
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════
+   AI INTELLIGENT SCOPING
+══════════════════════════════════════════════ */
+.scopingWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Primary outlined scoping button */
+.scopingBtn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.scopingBtn:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+.scopingBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.scopingHint {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.65;
+  max-width: 480px;
+}
+
+.aiError {
+  font-size: 0.85rem;
+  color: #b91c1c;
+  margin: 0;
+}
+
+/* ── Scoping Result — professional document block ── */
+.scopingResult {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.scopingResultHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.scopingResultEyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.riskIndicator {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* Risk colour variants */
+.risk_low    { color: #276749; }
+.risk_medium { color: #92600a; }
+.risk_high   { color: #9b1c1c; }
+
+.scopingFeedback {
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  line-height: 1.75;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Refined brief document block */
+.briefDocBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0.25rem;
+}
+
+.briefDocLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.briefDocText {
+  /* legacy fallback — no longer used for primary render */
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  color: var(--color-primary);
+  margin: 0;
+  line-height: 1.75;
+  scrollbar-width: thin;
+}
+
+.scopingActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.applyBtn {
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.applyBtn:hover { filter: brightness(1.12); }
+
+.dismissBtn {
+  background: transparent;
+  border: none;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.dismissBtn:hover { color: var(--color-primary); }
+
+/* ═══════════════════════════════════════════
+   RISK SCORE — editorial large number
+══════════════════════════════════════════════ */
+.riskRow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.riskNumber {
+  font-family: var(--font-heading);
+  font-size: 3.25rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  flex-shrink: 0;
+}
+
+.riskNum_low    { color: #276749; }
+.riskNum_medium { color: #92600a; }
+.riskNum_high   { color: #9b1c1c; }
+
+.riskDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.riskDetailLabel {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.riskDetailText {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   STRUCTURED BRIEF — editorial sections
+══════════════════════════════════════════════ */
+.briefSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.briefSection:last-child { border-bottom: none; }
+
+.briefSectionTitle {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 0;
+}
+
+.briefSectionBody {
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  line-height: 1.8;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Brief preview box — shown after "Apply to Form" */
+.briefPreview {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.editManuallyBtn {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0.75rem 0 0.25rem;
+  transition: color 0.2s;
+}
+.editManuallyBtn:hover { color: var(--color-primary); }
+
+/* ═══════════════════════════════════════════
+   FILE UPLOAD
+══════════════════════════════════════════════ */
+.uploadBtn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  margin-bottom: 0.75rem;
+}
+.uploadBtn:hover { border-color: var(--color-primary); }
 
 .fileList {
   display: flex;
@@ -97,56 +419,72 @@
 }
 
 .fileItem {
-  padding: 0.35rem 0.6rem;
-  background: var(--color-surface-alt, #f5f5f7);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--color-text-secondary);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
 }
 
-.uploadButton {
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  padding: 0.65rem 1.25rem;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: var(--shadow-xs);
-  margin-bottom: 0.6rem;
+/* ═══════════════════════════════════════════
+   FORM ACTIONS
+══════════════════════════════════════════════ */
+.formNotice {
+  font-size: 0.85rem;
+  color: #b91c1c;
+  margin: 0;
 }
 
 .formActions {
-  margin-top: var(--spacing-md);
   display: flex;
-  gap: var(--spacing-sm);
+  align-items: center;
+  gap: 2rem;
+  padding-top: 0.5rem;
 }
 
-.primaryButton {
+.submitBtn {
   background: var(--color-primary);
-  color: #fff;
+  color: #ffffff;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-xs);
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   cursor: pointer;
+  transition: filter 0.2s;
 }
+.submitBtn:hover:not(:disabled) { filter: brightness(1.12); }
+.submitBtn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-.ghostButton {
+.cancelBtn {
   background: transparent;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
+  border: none;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
   cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+.cancelBtn:hover { color: var(--color-primary); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .fieldRow { grid-template-columns: 1fr; gap: 2rem; }
+  .formBody { max-width: 100%; }
+  /* Risk score — scale down on mobile */
+  .riskNumber { font-size: 2.25rem; }
+  /* Scoping button full-width on small screens */
+  .scopingBtn { align-self: stretch; text-align: center; }
+  /* AI result left-border tighter */
+  .scopingResult { padding-left: 1rem; }
 }
 
-@media (max-width: 1024px) {
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .formGroupFull {
-    grid-column: span 1;
-  }
+@media (max-width: 480px) {
+  .riskNumber { font-size: 1.85rem; }
+  .riskRow { gap: 0.85rem; }
+  .scopingActions { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .briefSection { padding: 0.75rem 0; }
 }

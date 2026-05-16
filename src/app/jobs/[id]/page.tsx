@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Layout from '@/components/Layout/Layout';
 import { supabase } from '@/lib/supabase';
+import { renderInlineMarkdown } from '@/lib/richText';
 import styles from './page.module.css';
 
 export default function JobDetailPage() {
@@ -18,7 +19,8 @@ export default function JobDetailPage() {
   ]);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const currencySymbol = '$';
+  const [alreadyQuoted, setAlreadyQuoted] = useState(false);
+  const currencySymbol = '₹';
 
   const containsContactInfo = (value: string) => {
     const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
@@ -43,6 +45,16 @@ export default function JobDetailPage() {
         .single();
 
       setArtistId(artistProfile?.id || null);
+
+      if (artistProfile?.id) {
+        const { data: existingQuote } = await supabase
+          .from('project_quotes')
+          .select('id')
+          .eq('project_id', projectId)
+          .eq('artist_id', artistProfile.id)
+          .maybeSingle();
+        if (existingQuote) setAlreadyQuoted(true);
+      }
 
       const { data } = await supabase
         .from('projects')
@@ -118,7 +130,7 @@ export default function JobDetailPage() {
       setMessage(error.message);
     } else {
       await notifyQuoteParties(pdfUrl, totalAmount);
-      setMessage('Quote submitted! The client will review your offer.');
+      setAlreadyQuoted(true);
       setForm({ timeline: '', notes: '' });
       setServices([{ name: 'Modeling', rate: '' }]);
       setTermsAccepted(false);
@@ -250,10 +262,8 @@ export default function JobDetailPage() {
   if (loading) {
     return (
       <Layout>
-        <div className={styles.pageHeader}>
-          <div className="container">
-            <h1 className={styles.pageTitle}>Loading...</h1>
-          </div>
+        <div className={styles.stateWrap}>
+          <div className="container"><p className={styles.hint}>Loading brief&hellip;</p></div>
         </div>
       </Layout>
     );
@@ -262,51 +272,73 @@ export default function JobDetailPage() {
   if (!project) {
     return (
       <Layout>
-        <div className={styles.pageHeader}>
-          <div className="container">
-            <h1 className={styles.pageTitle}>Project not found</h1>
-          </div>
+        <div className={styles.stateWrap}>
+          <div className="container"><p className={styles.hint}>Project not found.</p></div>
         </div>
       </Layout>
     );
   }
 
+  // Parse AI-structured brief (## headings) into sections
+  const parseSections = (md: string): Array<{ title: string; body: string }> =>
+    md.split(/\n?## /).filter(Boolean).map((chunk) => {
+      const nl = chunk.indexOf('\n');
+      return {
+        title: nl > -1 ? chunk.slice(0, nl).trim() : chunk.trim(),
+        body:  nl > -1 ? chunk.slice(nl + 1).trim() : '',
+      };
+    });
+
+  const briefSections = project.description ? parseSections(project.description) : [];
+
   return (
     <Layout>
-      <div className={styles.pageHeader}>
-        <div className="container">
-          <button className={styles.backButton} onClick={() => window.history.back()}>
-            ← Back
-          </button>
-          <h1 className={styles.pageTitle}>{project.title}</h1>
-          <p className={styles.pageDescription}>{project.description}</p>
-        </div>
-      </div>
 
-      <section className={styles.section}>
+      {/* ── PAGE HEADER ── */}
+      <header className={styles.pageHeader}>
         <div className="container">
-          <div className={styles.layout}>
-            <div className={styles.detailsCard}>
-              <h2 className={styles.sectionTitle}>Project Details</h2>
-              <div className={styles.detailRow}>
-                <span>Category</span>
-                <strong>{project.category || 'General'}</strong>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Budget</span>
-                <strong>{currencySymbol}{project.budget_max}</strong>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Deadline</span>
-                <strong>{project.deadline || 'Flexible'}</strong>
-              </div>
+          <button className={styles.backLink} onClick={() => window.history.back()}>← Browse Briefs</button>
+          <p className={styles.eyebrow}>{project.category || 'Open Brief'}</p>
+          <h1 className={styles.pageTitle}>{project.title}</h1>
+          <div className={styles.headerMeta}>
+            {project.budget_max > 0 && (
+              <span className={styles.metaItem}>Budget: {currencySymbol}{project.budget_max.toLocaleString()}</span>
+            )}
+            {project.deadline && (
+              <span className={styles.metaItem}>Deadline: {project.deadline}</span>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* ── TWO-COLUMN BODY ── */}
+      <section className={styles.bodySection}>
+        <div className="container">
+          <div className={styles.twoCol}>
+
+            {/* LEFT — BRIEF */}
+            <div className={styles.briefCol}>
+              <p className={styles.colEyebrow}>Project Brief</p>
+
+              {briefSections.length > 1
+                ? briefSections.map((sec, i) => (
+                    <div key={i} className={styles.briefSection}>
+                      <p className={styles.briefSectionTitle}>{sec.title}</p>
+                      <p className={styles.briefSectionBody}>{renderInlineMarkdown(sec.body)}</p>
+                    </div>
+                  ))
+                : project.description
+                  ? <p className={styles.briefText}>{project.description}</p>
+                  : <p className={styles.hint}>No description provided.</p>
+              }
+
               {project.reference_links?.length > 0 && (
-                <div className={styles.referenceBlock}>
-                  <h3>Reference Links</h3>
-                  <ul>
+                <div className={styles.refBlock}>
+                  <p className={styles.colEyebrow} style={{ marginTop: '2rem' }}>Reference Links</p>
+                  <ul className={styles.refList}>
                     {project.reference_links.map((link: string) => (
                       <li key={link}>
-                        <a href={link} target="_blank" rel="noreferrer">
+                        <a href={link} target="_blank" rel="noreferrer" className={styles.refLink}>
                           {link}
                         </a>
                       </li>
@@ -316,77 +348,91 @@ export default function JobDetailPage() {
               )}
             </div>
 
-            <div className={styles.quoteCard}>
-              <h2 className={styles.sectionTitle}>Submit a Quote</h2>
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <div className={styles.servicesCard}>
-                  <div className={styles.servicesHeader}>
-                    <h3>Service Breakdown</h3>
-                    <button type="button" className={styles.addServiceButton} onClick={addServiceRow}>
-                      + Add Service
+            {/* RIGHT — QUOTE FORM or SUBMITTED STATE */}
+            <div className={styles.quoteCol}>
+
+              {alreadyQuoted ? (
+                <div className={styles.quotedConfirm}>
+                  <p className={styles.quotedIcon}>✓</p>
+                  <p className={styles.quotedTitle}>Quote Submitted.</p>
+                  <p className={styles.quotedSub}>Awaiting client review. You’ll be notified when the client makes a decision.</p>
+                </div>
+              ) : (
+                <>
+              <p className={styles.colEyebrow}>Submit a Quote</p>
+
+              <form className={styles.quoteForm} onSubmit={handleSubmit}>
+
+                {/* Service breakdown */}
+                <div className={styles.servicesBlock}>
+                  <div className={styles.servicesBlockHeader}>
+                    <span className={styles.fieldLabel}>Service Breakdown</span>
+                    <button type="button" className={styles.addServiceBtn} onClick={addServiceRow}>
+                      + Add
                     </button>
                   </div>
                   {services.map((service, index) => (
                     <div key={index} className={styles.serviceRow}>
                       <input
                         type="text"
-                        className={styles.input}
+                        className={styles.fieldInput}
                         placeholder="Service (e.g., Modeling)"
                         value={service.name}
                         onChange={(e) => handleServiceChange(index, 'name', e.target.value)}
                       />
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                        <span style={{ fontSize: '16px' }}>$</span>
+                      <div className={styles.serviceRateWrap}>
+                        <span className={styles.budgetSymbol}>{currencySymbol}</span>
                         <input
                           type="number"
-                          className={styles.input}
+                          className={styles.fieldInput}
                           placeholder="Rate"
                           value={service.rate}
                           onChange={(e) => handleServiceChange(index, 'rate', e.target.value)}
                         />
                       </div>
                       {services.length > 1 && (
-                        <button
-                          type="button"
-                          className={styles.removeServiceButton}
-                          onClick={() => removeServiceRow(index)}
-                        >
-                          Remove
+                        <button type="button" className={styles.removeServiceBtn} onClick={() => removeServiceRow(index)}>
+                          ×
                         </button>
                       )}
                     </div>
                   ))}
                   <div className={styles.serviceTotal}>
-                    <span>Total Quote</span>
-                    <strong>{currencySymbol}{totalAmount}</strong>
+                    <span className={styles.fieldLabel}>Total Quote</span>
+                    <span className={styles.serviceTotalValue}>{currencySymbol}{totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Timeline (days)</label>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel}>Timeline (days)</label>
                   <input
                     type="number"
-                    className={styles.input}
+                    className={styles.fieldInput}
                     value={form.timeline}
                     onChange={(e) => setForm({ ...form, timeline: e.target.value })}
                     required
+                    placeholder="e.g. 14"
                   />
                 </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Notes</label>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel}>Cover Letter</label>
+                  <p className={styles.fieldHint}>
+                    Describe your approach. Avoid sharing contact details.
+                  </p>
                   <textarea
-                    className={styles.textarea}
+                    className={styles.fieldTextarea}
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
                     rows={5}
+                    placeholder="Outline your approach, experience with similar projects, and why you're the right fit…"
                   />
-                  <p className={styles.helperText}>
-                    Avoid sharing phone numbers or emails. Keep communication on De’Artisa Hub.
-                  </p>
                 </div>
-                <div className={styles.termsCard}>
-                  <h4>Quote Terms</h4>
-                  <ul>
-                    <li>All communication stays on De’Artisa Hub.</li>
+
+                <div className={styles.termsBlock}>
+                  <p className={styles.termsTitle}>Quote Terms</p>
+                  <ul className={styles.termsList}>
+                    <li>All communication stays on De&apos;Artisa Hub.</li>
                     <li>Delivery follows the agreed timeline.</li>
                     <li>Payments are held in escrow until client approval.</li>
                   </ul>
@@ -396,18 +442,25 @@ export default function JobDetailPage() {
                       checked={termsAccepted}
                       onChange={(e) => setTermsAccepted(e.target.checked)}
                     />
-                    I agree to the quote terms.
+                    <span>I agree to the quote terms.</span>
                   </label>
                 </div>
+
                 {message && <p className={styles.notice}>{message}</p>}
-                <button className={styles.primaryButton} type="submit">
-                  Submit Quote
+
+                <button type="submit" className={styles.submitBtn}>
+                  Submit Quote →
                 </button>
+
               </form>
+              </>
+              )}
             </div>
+
           </div>
         </div>
       </section>
+
     </Layout>
   );
 }

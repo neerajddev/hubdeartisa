@@ -1,9 +1,103 @@
 .footer {
-  background: linear-gradient(135deg, #092B2F 0%, #0d363b 55%, #0b2f33 100%);
+  background: #092B2F;
   color: var(--color-background);
-  padding: var(--spacing-lg) 0 var(--spacing-sm);
-  margin-top: var(--spacing-xl);
-  border-top: 1px solid rgba(9, 43, 47, 0.2);
+  padding: 5rem 0 0;
+  margin-top: 0;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 4rem;
+}
+
+.footerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Logo */
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.logoDeArtisa {
+  color: #F5F3EF;
+}
+
+.logoHub {
+  color: var(--color-accent);
+}
+
+.tagline {
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(245, 243, 239, 0.5);
+  max-width: 280px;
+  margin: 0;
+}
+
+/* Column headings */
+.footerTitle {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 243, 239, 0.4);
+  margin: 0 0 1.25rem;
+}
+
+/* Nav links */
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.footerLink {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgba(245, 243, 239, 0.6);
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  color: var(--color-accent);
+}
+
+/* Copyright bar */
+.footerBottom {
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(245, 243, 239, 0.08);
+  text-align: center;
+}
+
+.copyright {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: rgba(245, 243, 239, 0.3);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .footerContent { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+}
+
+@media (max-width: 768px) {
+  .footer         { padding: 3.5rem 0 0; }
+  .footerContent  { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 2.5rem; }
+  .tagline        { max-width: 100%; }
 }
 
 .footerContent {

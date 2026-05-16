@@ -99,32 +99,38 @@ export default function ArtistWorkPage() {
             </div>
             <div className={styles.formGroupFull}>
               <label className={styles.label}>Upload Image</label>
-              <CldUploadWidget
-                uploadPreset="de_artisa_uploads"
-                onSuccess={(result: any) => {
-                  if (result.event === 'success') {
-                    setForm({ ...form, image_url: result.info.secure_url });
-                  }
-                }}
-              >
-                {({ open }) => (
-                  <div>
-                    <button
-                      type="button"
-                      className={styles.uploadButton}
-                      onClick={() => open()}
-                    >
-                      Choose Image
-                    </button>
-                    {form.image_url && (
-                      <div className={styles.imagePreview}>
-                        <img src={form.image_url} alt="Preview" />
-                        <p className={styles.imageUrl}>{form.image_url}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </CldUploadWidget>
+              {process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ? (
+                <CldUploadWidget
+                  uploadPreset="de_artisa_uploads"
+                  onSuccess={(result: any) => {
+                    if (result.event === 'success') {
+                      setForm({ ...form, image_url: result.info.secure_url });
+                    }
+                  }}
+                >
+                  {({ open }) => (
+                    <div>
+                      <button
+                        type="button"
+                        className={styles.uploadButton}
+                        onClick={() => open()}
+                      >
+                        Choose Image
+                      </button>
+                      {form.image_url && (
+                        <div className={styles.imagePreview}>
+                          <img src={form.image_url} alt="Preview" />
+                          <p className={styles.imageUrl}>{form.image_url}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </CldUploadWidget>
+              ) : (
+                <button type="button" className={styles.uploadButton} disabled>
+                  Choose Image (storage not configured)
+                </button>
+              )}
             </div>
             <div className={styles.formGroupFull}>
               <label className={styles.label}>Description</label>

@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Layout from '@/components/Layout/Layout';
 import { supabase } from '@/lib/supabase';
+import { ROUTES } from '@/constants/brand';
 import styles from './page.module.css';
 
 interface MessageRow {
@@ -16,13 +17,16 @@ interface MessageRow {
 
 export default function ArtistProjectMessagesPage() {
   const params = useParams();
-  const router = useRouter();
   const projectId = params?.id as string;
+
   const [messages, setMessages] = useState<MessageRow[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [projectTitle, setProjectTitle] = useState('');
+
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const containsContactInfo = (value: string) => {
     const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
@@ -34,10 +38,18 @@ export default function ArtistProjectMessagesPage() {
     const load = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session?.user?.id) {
-        setMessage('Please sign in to view messages.');
+        setNotice('Please sign in to view messages.');
         setLoading(false);
         return;
       }
+
+      // Load project title for header
+      const { data: proj } = await supabase
+        .from('projects')
+        .select('title')
+        .eq('id', projectId)
+        .single();
+      if (proj?.title) setProjectTitle(proj.title);
 
       const { data, error } = await supabase
         .from('project_messages')
@@ -46,32 +58,36 @@ export default function ArtistProjectMessagesPage() {
         .order('created_at', { ascending: true });
 
       if (error) {
-        setMessage(error.message);
+        setNotice(error.message);
       } else {
         setMessages(data || []);
       }
       setLoading(false);
     };
 
-    if (projectId) {
-      load();
-    }
+    if (projectId) load();
   }, [projectId]);
 
+  // Auto-scroll to latest message
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const handleSend = async () => {
-    if (!newMessage.trim()) return;
-    if (containsContactInfo(newMessage)) {
-      setMessage('Please remove phone numbers or emails from messages.');
+    const trimmed = newMessage.trim();
+    if (!trimmed) return;
+    if (containsContactInfo(trimmed)) {
+      setNotice('Please remove phone numbers or emails from messages.');
       return;
     }
 
     setSending(true);
-    setMessage(null);
+    setNotice(null);
 
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData.session?.user?.id;
     if (!userId) {
-      setMessage('Please sign in.');
+      setNotice('Please sign in.');
       setSending(false);
       return;
     }
@@ -80,73 +96,102 @@ export default function ArtistProjectMessagesPage() {
       project_id: projectId,
       sender_user_id: userId,
       sender_role: 'artist',
-      message: newMessage.trim(),
+      message: trimmed,
     });
 
     if (error) {
-      setMessage(error.message);
+      setNotice(error.message);
     } else {
       setMessages((prev) => [
         ...prev,
         {
-          id: `${Date.now()}`,
+          id: `temp-${Date.now()}`,
           sender_user_id: userId,
           sender_role: 'artist',
-          message: newMessage.trim(),
+          message: trimmed,
           created_at: new Date().toISOString(),
         },
       ]);
       setNewMessage('');
     }
-
     setSending(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
     <Layout>
-      <div className={styles.pageHeader}>
+      <header className={styles.pageHeader}>
         <div className="container">
-          <button className={styles.backButton} onClick={() => router.back()}>
+          <a href={ROUTES.artistJobWorkspace(projectId)} className={styles.backLink}>
             ← Back
-          </button>
-          <h1 className={styles.pageTitle}>Project Messages</h1>
-          <p className={styles.pageDescription}>Keep all communication inside De’Artisa Hub.</p>
+          </a>
+          <p className={styles.eyebrow}>Project Messages</p>
+          <h1 className={styles.pageTitle}>{projectTitle || 'Conversation'}</h1>
+          <p className={styles.pageSubtitle}>
+            All communication stays inside De’Artisa Hub. Contact sharing is not permitted.
+          </p>
         </div>
-      </div>
+      </header>
 
       <section className={styles.section}>
         <div className="container">
-          <div className={styles.card}>
-            {loading ? (
-              <p className={styles.notice}>Loading messages...</p>
-            ) : (
-              <div className={styles.messagesList}>
-                {messages.length === 0 && (
-                  <p className={styles.notice}>No messages yet.</p>
-                )}
-                {messages.map((row) => (
-                  <div key={row.id} className={styles.messageRow}>
-                    <div className={styles.messageBubble}>
-                      <p>{row.message}</p>
-                      <span>{new Date(row.created_at).toLocaleString()}</span>
+          <div className={styles.chatWrap}>
+
+            {/* ── CHAT HISTORY ── */}
+            <div className={styles.messagesList}>
+              {loading && <p className={styles.notice}>Loading messages…</p>}
+              {!loading && messages.length === 0 && (
+                <p className={styles.emptyState}>No messages yet. Start the conversation below.</p>
+              )}
+              {messages.map((row) => {
+                const isClient = row.sender_role === 'client';
+                return (
+                  <div
+                    key={row.id}
+                    className={`${styles.messageRow} ${isClient ? styles.messageRowClient : styles.messageRowArtist}`}
+                  >
+                    <div className={`${styles.bubble} ${isClient ? styles.bubbleClient : styles.bubbleArtist}`}>
+                      <p className={styles.bubbleText}>{row.message}</p>
+                      <span className={styles.bubbleTime}>
+                        {new Date(row.created_at).toLocaleString(undefined, {
+                          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+                        })}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+              <div ref={bottomRef} />
+            </div>
+
+            {/* ── NOTICE ── */}
+            {notice && <p className={styles.notice}>{notice}</p>}
+
+            {/* ── COMPOSER ── */}
             <div className={styles.composer}>
               <textarea
-                className={styles.textarea}
-                rows={3}
+                className={styles.composerInput}
+                rows={2}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type your message..."
+                onKeyDown={handleKeyDown}
+                placeholder="Write a message… (Enter to send)"
               />
-              <button className={styles.primaryButton} onClick={handleSend} disabled={sending}>
-                {sending ? 'Sending...' : 'Send Message'}
+              <button
+                className={styles.sendBtn}
+                onClick={handleSend}
+                disabled={sending || !newMessage.trim()}
+              >
+                {sending ? 'Sending…' : 'Send →'}
               </button>
             </div>
-            {message && <p className={styles.notice}>{message}</p>}
+
           </div>
         </div>
       </section>

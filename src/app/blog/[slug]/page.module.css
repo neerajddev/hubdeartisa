@@ -1,0 +1,207 @@
+/* ═══════════════════════════════════════════
+   ARTICLE HEADER
+══════════════════════════════════════════════ */
+.articleHeader {
+  padding: calc(var(--nav-height) + 4rem) 0 3.5rem;
+}
+
+.headerContainer {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.backLink {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  margin-bottom: 2.5rem;
+  transition: color 0.2s;
+}
+.backLink:hover { color: var(--color-primary); }
+
+.articleMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.metaDivider {
+  color: var(--color-text-secondary);
+  opacity: 0.35;
+  font-size: 0.75rem;
+}
+
+.metaItem {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.articleTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0 0 1.75rem;
+}
+
+.articleLead {
+  font-size: 1.15rem;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── AI Executive Summary ── */
+.aiSummary {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-left: 2px solid var(--color-primary);
+  border-radius: 0 4px 4px 0;
+}
+
+.aiSummaryEyebrow {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.7;
+  margin: 0 0 0.6rem;
+}
+
+.aiSummaryText {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
+.aiSummaryLoading {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-style: italic;
+  opacity: 0.55;
+  animation: aiPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes aiPulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 0.85; }
+}
+
+/* ═══════════════════════════════════════════
+   RULE
+══════════════════════════════════════════════ */
+.dividerWrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  margin: 0 0 3.5rem;
+}
+
+/* ═══════════════════════════════════════════
+   ARTICLE BODY
+══════════════════════════════════════════════ */
+.bodyContainer {
+  padding-bottom: 6rem;
+}
+
+.bodyInner {
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.bodyPara {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: rgba(9, 43, 47, 0.82);
+  margin: 0 0 1.75em;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+
+/* First paragraph — drop cap / lead treatment */
+.bodyInner .bodyPara:first-of-type {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: var(--color-primary);
+  font-weight: 450;
+}
+
+/* ═══════════════════════════════════════════
+   ARTICLE FOOTER
+══════════════════════════════════════════════ */
+.articleFooter {
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.footerRule {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.footerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footerLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin: 0;
+  opacity: 0.6;
+}
+
+.footerBack {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: opacity 0.2s;
+}
+.footerBack:hover { opacity: 0.55; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .articleTitle { font-size: 1.85rem; }
+  .articleLead { font-size: 1rem; }
+  .bodyPara { font-size: 1rem; line-height: 1.8; }
+  .bodyInner .bodyPara:first-of-type { font-size: 1.05rem; }
+}

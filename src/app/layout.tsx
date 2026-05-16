@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
+import { AuthProvider } from '@/lib/auth-context';
 
 export const metadata: Metadata = {
   title: "DeArtisa'Hub - Connect with 3D Visualizers",
@@ -17,11 +18,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&family=Inter:wght@300;400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

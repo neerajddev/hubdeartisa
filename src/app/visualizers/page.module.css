@@ -1,234 +1,144 @@
+/* ═══════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════════ */
 .pageHeader {
-  padding: var(--spacing-sm) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 4rem) 0 3.5rem;
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.backBar {
-  padding: var(--spacing-xs) 0 var(--spacing-sm);
-}
-
-.backLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  margin-bottom: var(--spacing-sm);
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.backLink:hover {
-  text-decoration: underline;
+.pageEyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 0 0 0.75rem;
 }
 
 .pageTitle {
-  font-size: 2rem;
-  margin-bottom: var(--spacing-xs);
-  text-align: left;
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-primary);
+  line-height: 1.06;
+  margin: 0 0 1rem;
 }
 
 .pageDescription {
   font-size: 1rem;
   color: var(--color-text-secondary);
-  text-align: left;
-  max-width: 800px;
-  line-height: 1.5;
+  margin: 0;
+  line-height: 1.6;
 }
 
+/* ═══════════════════════════════════════════
+   GRID
+══════════════════════════════════════════════ */
 .visualizersSection {
-  padding: var(--spacing-sm) 0;
+  padding: 4rem 0 6rem;
+}
+
+.stateText {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
 }
 
 .visualizersGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-sm);
+  gap: 4rem 3rem;
 }
 
-.visualizerCard {
+/* ═══════════════════════════════════════════
+   ARTIST CARD — bare, gallery-style
+══════════════════════════════════════════════ */
+.artistCard {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  padding: var(--spacing-sm);
-  box-shadow: var(--shadow-xs);
+  gap: 0;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
-/* Header */
-.visualizerHeader {
-  display: flex;
-  gap: var(--spacing-sm);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-border-subtle);
-  align-items: flex-start;
-}
-
-.visualizerAvatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-  color: var(--color-background);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-heading);
-  font-size: 1.375rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.visualizerInfo {
-  flex: 1;
-}
-
-.visualizerName {
-  font-size: 1.125rem;
-  margin-bottom: 0.25rem;
-  color: var(--color-primary);
-}
-
-.visualizerLocation {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-/* Experience */
-.experience {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: var(--spacing-xs) 0;
-}
-
-.expLabel {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-  font-weight: 400;
-}
-
-.expValue {
-  font-size: 0.9375rem;
-  color: var(--color-primary);
-  font-weight: 500;
-}
-
-/* Services Section */
-.servicesSection {
-  padding: var(--spacing-xs) 0;
-}
-
-.servicesTitle {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Specialties */
-.specialties {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.specialty {
-  padding: 0.25rem 0.625rem;
-  background-color: var(--color-surface-muted);
-  font-size: 0.8125rem;
-  color: var(--color-text-primary);
-  font-weight: 400;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-}
-
-/* Work Thumbnails */
-.workThumbnails {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin: var(--spacing-xs) 0;
-}
-
-.thumbnail {
-  aspect-ratio: 4/3;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-border);
-  position: relative;
-  overflow: hidden;
+/* Hero image */
+.artistHero {
+  aspect-ratio: 4 / 3;
   border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-surface-muted);
+  margin-bottom: 1.25rem;
 }
 
-.thumbnail img {
+.artistHeroImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.thumbnail::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(9, 43, 47, 0.5) 0%, rgba(189, 173, 157, 0.3) 100%);
+.artistCard:hover .artistHeroImg {
+  transform: scale(1.04);
 }
 
-.thumbnailLabel {
-  position: relative;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  padding: 0.25rem;
-}
-
-.thumbnailPlaceholder {
-  grid-column: 1 / -1;
-  border: 1px dashed var(--color-border);
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
-  padding: var(--spacing-sm);
-  text-align: center;
-  border-radius: 12px;
-  background: var(--color-surface-muted);
-}
-
-.rateRow {
+/* Text body */
+.artistBody {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: var(--spacing-xs) 0;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-/* Actions */
-.cardActions {
-  margin-top: auto;
-  padding-top: var(--spacing-sm);
+.artistName {
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+  margin: 0;
 }
 
-/* Responsive */
+.artistMeta {
+  font-size: 0.825rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.artistServices {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin: 0.1rem 0 0;
+  font-style: italic;
+}
+
+.portfolioLink {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s;
+}
+
+.artistCard:hover .portfolioLink {
+  opacity: 0.55;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
 @media (max-width: 1024px) {
-  .visualizersGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .visualizersGrid { grid-template-columns: repeat(2, 1fr); gap: 3rem 2.5rem; }
 }
 
-@media (max-width: 768px) {
-  .visualizersGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .pageTitle {
-    font-size: 2rem;
-  }
+@media (max-width: 640px) {
+  .visualizersGrid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .pageTitle       { font-size: 2.5rem; }
 }

@@ -1,8 +1,96 @@
+/* Success State */
+.successSection {
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.successCard {
+  max-width: 560px;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  text-align: center;
+}
+
+.successIcon {
+  font-size: 2.5rem;
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-md);
+  line-height: 1;
+}
+
+.successTitle {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.successMessage {
+  font-size: 1.0625rem;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-bottom: var(--spacing-sm);
+}
+
+.successMessage strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.successSub {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.successSub strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.successBackLink {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  border: 1px solid var(--color-primary);
+  padding: 0.625rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.successBackLink:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/* Page Header */
 .pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 3rem) 0 2.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.headerBadge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: rgba(189, 173, 157, 0.12);
+  border: 1px solid rgba(189, 173, 157, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.75rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.labelHint {
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
 }
 
 .backBar {
@@ -43,11 +131,7 @@
 
 .formContainer {
   max-width: 700px;
-  background: var(--color-surface);
-  padding: var(--spacing-lg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  padding: 0;
 }
 
 .form {
@@ -78,31 +162,34 @@
 }
 
 .label {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--color-primary);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
   font-family: var(--font-heading);
 }
 
 .input,
 .select,
 .textarea {
-  padding: 0.875rem 1rem;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 0.75rem 0;
   font-size: 1rem;
   font-family: var(--font-body);
   color: var(--color-text-primary);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  border-radius: var(--radius-sm);
+  transition: border-color 0.2s;
+  width: 100%;
 }
 
 .input:focus,
 .select:focus,
 .textarea:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(9, 43, 47, 0.12);
+  border-bottom-color: var(--color-primary);
 }
 
 .select {
@@ -126,15 +213,14 @@
   align-items: center;
   gap: 0.625rem;
   cursor: pointer;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border-subtle);
-  transition: all 0.2s ease;
-  border-radius: 10px;
+  padding: 0.5rem 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: border-color 0.2s;
 }
 
 .checkboxLabel:hover {
-  border-color: var(--color-border);
-  background-color: var(--color-border-subtle);
+  border-bottom-color: var(--color-primary);
 }
 
 .checkbox {

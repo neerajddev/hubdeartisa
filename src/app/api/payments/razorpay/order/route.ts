@@ -25,29 +25,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Project client not found.' }, { status: 400 });
     }
 
-    const razorpayKey = process.env.RAZORPAY_KEY_ID || '';
+    // Accept NEXT_PUBLIC_ prefix as fallback — key_id is safe to expose client-side.
+    // The secret must NEVER have a NEXT_PUBLIC_ prefix.
+    const razorpayKey = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '';
     const razorpaySecret = process.env.RAZORPAY_KEY_SECRET || '';
 
-    if (!razorpayKey || !razorpaySecret) {
-      return NextResponse.json({ error: 'Razorpay keys are missing.' }, { status: 500 });
+    if (!razorpayKey) {
+      return NextResponse.json({ error: 'Razorpay key ID is missing. Set RAZORPAY_KEY_ID in .env.local.' }, { status: 500 });
+    }
+    if (!razorpaySecret) {
+      return NextResponse.json({ error: 'Razorpay secret is missing. Set RAZORPAY_KEY_SECRET in .env.local.' }, { status: 500 });
     }
 
-    // Fetch real-time USD to INR exchange rate
-    let USD_TO_INR_RATE = 83; // fallback rate
-    try {
-      const rateResponse = await fetch('https://api.exchangerate-api.com/v4/latest/USD', {
-        next: { revalidate: 3600 }, // Cache for 1 hour
-      });
-      if (rateResponse.ok) {
-        const rateData = await rateResponse.json();
-        USD_TO_INR_RATE = rateData.rates.INR || 83;
-      }
-    } catch (error) {
-      console.warn('Failed to fetch live exchange rate, using fallback:', error);
-      // Continue with fallback rate
-    }
-
-    const amountInINR = Math.round(normalizedAmount * USD_TO_INR_RATE);
+    // Amount is already in INR (Indian market — no conversion needed)
+    const amountInINR = Math.round(normalizedAmount);
 
     const client = new Razorpay({
       key_id: razorpayKey,
@@ -57,13 +48,13 @@ export async function POST(request: Request) {
     const order = await client.orders.create({
       amount: Math.round(amountInINR * 100), // Razorpay expects amount in paise (1/100 of INR)
       currency: 'INR',
-      receipt: `project_${projectId}`,
+      receipt: `proj_${projectId.slice(0, 34)}`, // Razorpay receipt max 40 chars
     });
 
     await supabaseAdmin.from('project_payments').insert({
       project_id: projectId,
       client_id: clientId,
-      amount: normalizedAmount, // Store original USD amount
+      amount: normalizedAmount, // Stored in INR
       provider: 'razorpay',
       status: 'created',
       order_id: order.id,
@@ -74,9 +65,7 @@ export async function POST(request: Request) {
       amount: order.amount,
       currency: order.currency,
       orderId: order.id,
-      amountUSD: normalizedAmount,
       amountINR: amountInINR,
-      exchangeRate: USD_TO_INR_RATE,
     });
   } catch (error: any) {
     const errorMessage =

@@ -3,31 +3,49 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Layout from '@/components/Layout/Layout';
-import Card from '@/components/Card/Card';
-import Button from '@/components/Button/Button';
-import Input from '@/components/Input/Input';
 import { ROUTES } from '@/constants/brand';
 import { supabase } from '@/lib/supabase';
+import { renderInlineMarkdown } from '@/lib/richText';
 import styles from './page.module.css';
 
 export default function HirePage() {
   const params = useParams();
   const router = useRouter();
   const visualizerId = params.id as string;
-  const [accessState, setAccessState] = useState<'checking' | 'allowed' | 'blocked'>('checking');
-  const [accessMessage, setAccessMessage] = useState('Checking access...');
+
   const [visualizer, setVisualizer] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState<string | null>(null);
+  const [accessBlocked, setAccessBlocked] = useState(false);
+  const [accessMessage, setAccessMessage] = useState('');
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState({
+    projectTitle: '',
+    description: '',
+    deadline: '',
+    budget: '',
+  });
+
+  // AI Smart Brief
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState<{
+    riskScore: number;
+    feedback: string;
+    structuredBrief: string;
+  } | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   useEffect(() => {
-    const checkAccess = async () => {
+    const init = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
       const userId = sessionData.session?.user?.id;
 
       if (!userId) {
-        setAccessState('blocked');
-        setAccessMessage('Please sign in to assign work to a 3D artist.');
+        setAccessBlocked(true);
+        setAccessMessage('Please sign in to assign work to an artist.');
+        setLoading(false);
         return;
       }
 
@@ -38,19 +56,12 @@ export default function HirePage() {
         .single();
 
       if (roleRow?.role !== 'client') {
-        setAccessState('blocked');
-        setAccessMessage('Only clients can assign work to 3D artists.');
+        setAccessBlocked(true);
+        setAccessMessage('Only clients can assign work to artists.');
+        setLoading(false);
         return;
       }
 
-      setAccessState('allowed');
-    };
-
-    checkAccess();
-  }, []);
-
-  useEffect(() => {
-    const loadArtist = async () => {
       const { data } = await supabase
         .from('artist_profiles')
         .select('id, full_name, experience, min_rate, max_rate, state, country, user_id, email, phone')
@@ -61,74 +72,71 @@ export default function HirePage() {
       setLoading(false);
     };
 
-    if (visualizerId) {
-      loadArtist();
-    }
+    if (visualizerId) init();
   }, [visualizerId]);
-  
-  const [formData, setFormData] = useState({
-    projectTitle: '',
-    description: '',
-    requirements: '',
-    deadline: '',
-    budget: '',
-  });
 
-  if (loading) {
-    return (
-      <Layout>
-        <div className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
-          <h1>Loading artist...</h1>
-        </div>
-      </Layout>
-    );
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  if (!visualizer) {
-    return (
-      <Layout>
-        <div className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
-          <h1>Visualizer not found</h1>
-        </div>
-      </Layout>
-    );
-  }
+  const handleRefineBrief = async () => {
+    if (!formData.description.trim()) return;
+    setAiLoading(true);
+    setAiError(null);
+    setAiResult(null);
+    try {
+      const res = await fetch('/api/ai/generate-brief', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: formData.description }),
+      });
+      const data = await res.json();
+      if (!res.ok) setAiError(data.error || 'AI refinement failed.');
+      else setAiResult(data);
+    } catch {
+      setAiError('AI refinement failed. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
-  if (accessState === 'blocked') {
-    return (
-      <Layout>
-        <div className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
-          <h1>{accessMessage}</h1>
-          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-            <Button onClick={() => router.push(ROUTES.signIn)}>Sign In</Button>
-            <Button variant="outline" onClick={() => router.push(ROUTES.visualizers)}>
-              Back to Artists
-            </Button>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  const applyAiBrief = () => {
+    if (!aiResult) return;
+    setFormData((prev) => ({ ...prev, description: aiResult.structuredBrief }));
+    setIsPreviewMode(true);
+    setAiResult(null);
+  };
+
+  const riskLabel = (score: number) => {
+    if (score <= 3) return { text: 'Brief is clear and complete.', level: 'low' };
+    if (score <= 6) return { text: 'Some clarification advised before posting.', level: 'medium' };
+    return { text: 'Detailed scoping recommended before proceeding.', level: 'high' };
+  };
+
+  const parseSections = (md: string): Array<{ title: string; body: string }> =>
+    md.split(/\n?## /).filter(Boolean).map((chunk) => {
+      const nl = chunk.indexOf('\n');
+      return {
+        title: nl > -1 ? chunk.slice(0, nl).trim() : chunk.trim(),
+        body:  nl > -1 ? chunk.slice(nl + 1).trim() : '',
+      };
+    });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage(null);
+    setSubmitLoading(true);
+    setNotice(null);
 
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData.session?.user?.id;
-    if (!userId) {
-      setMessage('Please sign in to submit a brief.');
-      return;
-    }
+    if (!userId) { setNotice('Please sign in.'); setSubmitLoading(false); return; }
 
     const { data: clientProfile } = await supabase
-      .from('client_profiles')
-      .select('id')
-      .eq('user_id', userId)
-      .single();
+      .from('client_profiles').select('id').eq('user_id', userId).single();
 
     if (!clientProfile?.id) {
-      setMessage('Please complete your client profile first.');
+      setNotice('Please complete your client profile first.');
+      setSubmitLoading(false);
       return;
     }
 
@@ -137,7 +145,7 @@ export default function HirePage() {
       .insert({
         client_id: clientProfile.id,
         title: formData.projectTitle,
-        description: `${formData.description}\n\nRequirements: ${formData.requirements}`,
+        description: formData.description,
         category: 'Direct Hire',
         budget_min: Number(formData.budget || 0),
         budget_max: Number(formData.budget || 0),
@@ -148,10 +156,7 @@ export default function HirePage() {
       .select('id')
       .single();
 
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
+    if (error) { setNotice(error.message); setSubmitLoading(false); return; }
 
     if (visualizer?.user_id) {
       await fetch('/api/notifications/send', {
@@ -161,168 +166,258 @@ export default function HirePage() {
           userId: visualizer.user_id,
           email: visualizer.email,
           whatsapp: visualizer.phone,
-          message: `You have a new direct hire request. Submit your quote here: ${window.location.origin}/jobs/${project?.id}`,
+          message: `You have a new direct hire request. Review it: ${window.location.origin}/jobs/${project?.id}`,
         }),
       });
     }
 
-    router.push(ROUTES.clientProjects);
+    router.push(project?.id ? ROUTES.clientProjectWorkspace(project.id) : ROUTES.clientDashboard);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  if (loading) {
+    return (
+      <Layout>
+        <div className={styles.stateWrap}>
+          <p className={styles.hint}>Loading&hellip;</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (accessBlocked || !visualizer) {
+    return (
+      <Layout>
+        <div className={styles.stateWrap}>
+          <p className={styles.eyebrow}>Access</p>
+          <h1 className={styles.stateTitle}>{accessMessage || 'Artist not found.'}</h1>
+          <button className={styles.backBtn} onClick={() => router.push(ROUTES.visualizers)}>
+            ← Browse Artists
+          </button>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
-      <div className={styles.pageHeader}>
+
+      {/* ── PAGE HEADER ── */}
+      <header className={styles.pageHeader}>
         <div className="container">
-          <h1 className={styles.pageTitle}>Submit Project Brief</h1>
-          <p className={styles.pageDescription}>
-            Provide details about your project. {visualizer.full_name} will review and send you a quote.
+          <button className={styles.backLink} onClick={() => router.back()}>← Back</button>
+          <p className={styles.eyebrow}>Direct Hire</p>
+          <h1 className={styles.pageTitle}>Commission {visualizer.full_name}</h1>
+          <p className={styles.pageSubtitle}>
+            Describe your vision. Our AI will help you structure a precise brief before it reaches the artist.
           </p>
         </div>
-      </div>
+      </header>
 
-      <section className={styles.contentSection}>
+      {/* ── TWO-COLUMN BODY ── */}
+      <section className={styles.bodySection}>
         <div className="container">
-          <div className={styles.contentGrid}>
-            {/* Main Form */}
-            <div className={styles.mainContent}>
-              <form onSubmit={handleSubmit}>
-                <Card padding="large">
-                  <h2 className={styles.formTitle}>Project Details</h2>
-                  
-                  <Input
-                    label="Project Title"
+          <div className={styles.twoCol}>
+
+            {/* LEFT — FORM (8 cols) */}
+            <div className={styles.formCol}>
+              <form onSubmit={handleSubmit} className={styles.form}>
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel}>Project Title</label>
+                  <input
                     name="projectTitle"
+                    className={styles.fieldInput}
                     value={formData.projectTitle}
                     onChange={handleChange}
-                    placeholder="e.g., Modern Living Room Visualization"
                     required
+                    placeholder="e.g. Luxury Penthouse Interior — Phase 1"
                   />
-                  
-                  <Input
-                    label="Project Description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    placeholder="Describe your project vision, style, and any key elements..."
-                    multiline
-                    rows={5}
-                    required
-                  />
-                  
-                  <Input
-                    label="Specific Requirements"
-                    name="requirements"
-                    value={formData.requirements}
-                    onChange={handleChange}
-                    placeholder="Camera angles, lighting preferences, materials, etc..."
-                    multiline
-                    rows={4}
-                    required
-                  />
-                  
-                  <div className={styles.formRow}>
-                    <Input
-                      label="Deadline"
-                      name="deadline"
+                </div>
+
+                <div className={styles.fieldRow}>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>Deadline</label>
+                    <input
                       type="date"
+                      name="deadline"
+                      className={styles.fieldInput}
                       value={formData.deadline}
                       onChange={handleChange}
-                      required
-                    />
-                    
-                    <Input
-                      label="Budget (USD)"
-                      name="budget"
-                      type="number"
-                      value={formData.budget}
-                      onChange={handleChange}
-                      placeholder="Optional"
                     />
                   </div>
-                  
-                  <div className={styles.fileUpload}>
-                    <label className={styles.fileUploadLabel}>
-                      Project Files
-                      <span className={styles.fileUploadHint}>(CAD files, references, mood boards)</span>
-                    </label>
-                    <div className={styles.fileUploadArea}>
-                      <p className={styles.fileUploadText}>
-                        Click to upload or drag and drop
-                      </p>
-                      <p className={styles.fileUploadSubtext}>
-                        Max file size: 50MB
-                      </p>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>Budget (INR)</label>
+                    <div className={styles.budgetWrap}>
+                      <span className={styles.budgetSymbol}>₹</span>
+                      <input
+                        type="number"
+                        name="budget"
+                        className={styles.fieldInput}
+                        value={formData.budget}
+                        onChange={handleChange}
+                        placeholder="0"
+                      />
                     </div>
                   </div>
-                  
-                  <div className={styles.formActions}>
-                    <Button type="button" variant="outline" onClick={() => router.back()}>
-                      Cancel
-                    </Button>
-                    <Button type="submit" size="large">
-                      Submit Brief
-                    </Button>
-                  </div>
-                  {message && <p className={styles.notice}>{message}</p>}
-                </Card>
+                </div>
+
+                <div className={styles.sectionDivider} />
+
+                <div className={styles.fieldGroup}>
+                  <label className={styles.fieldLabel}>Project Brief</label>
+                  <p className={styles.fieldHint}>
+                    Describe your project in detail. The more context you provide, the better the outcome.
+                  </p>
+                  {isPreviewMode ? (
+                    <div className={styles.briefPreview}>
+                      {parseSections(formData.description).map((sec, i) => (
+                        <div key={i} className={styles.briefSection}>
+                          <p className={styles.briefSectionTitle}>{sec.title}</p>
+                          <p className={styles.briefSectionBody}>{renderInlineMarkdown(sec.body)}</p>
+                        </div>
+                      ))}
+                      <button type="button" className={styles.editManuallyBtn} onClick={() => setIsPreviewMode(false)}>
+                        ✏️ Edit Manually
+                      </button>
+                    </div>
+                  ) : (
+                    <textarea
+                      name="description"
+                      className={styles.fieldTextarea}
+                      value={formData.description}
+                      onChange={handleChange}
+                      rows={7}
+                      required
+                      placeholder="Describe your vision. Let our AI structure it. (Helpful details: Interior/Exterior, number of views, lighting mood, key materials, camera angles)."
+                    />
+                  )}
+                </div>
+
+                {/* ── AI SCOPING ── */}
+                <div className={styles.scopingWrap}>
+                  <button
+                    type="button"
+                    className={styles.scopingBtn}
+                    onClick={handleRefineBrief}
+                    disabled={aiLoading || !formData.description.trim()}
+                  >
+                    {aiLoading ? '✨ AI is analyzing...' : 'Initiate Intelligent Scoping'}
+                  </button>
+                  <p className={styles.scopingHint}>
+                    Our AI reviews your brief for completeness, flags ambiguities, and produces a structured technical document.
+                  </p>
+
+                  {aiError && <p className={styles.aiError}>{aiError}</p>}
+
+                  {aiResult && (() => {
+                    const risk = riskLabel(aiResult.riskScore);
+                    const sections = parseSections(aiResult.structuredBrief);
+                    return (
+                      <div className={styles.scopingResult}>
+                        <span className={styles.scopingResultEyebrow}>Intelligent Scoping — Assessment</span>
+
+                        <div className={styles.riskRow}>
+                          <span className={`${styles.riskNumber} ${styles[`riskNum_${risk.level}`]}`}>
+                            {aiResult.riskScore}
+                          </span>
+                          <div className={styles.riskDetail}>
+                            <span className={styles.riskDetailLabel}>Complexity Score /10</span>
+                            <span className={styles.riskDetailText}>{risk.text}</span>
+                          </div>
+                        </div>
+
+                        <p className={styles.scopingFeedback}>{aiResult.feedback}</p>
+
+                        <div className={styles.briefDocBlock}>
+                          <p className={styles.briefDocLabel}>Structured Technical Brief</p>
+                          {sections.length > 0
+                            ? sections.map((sec, i) => (
+                                <div key={i} className={styles.briefSection}>
+                                  <p className={styles.briefSectionTitle}>{sec.title}</p>
+                                  <p className={styles.briefSectionBody}>{renderInlineMarkdown(sec.body)}</p>
+                                </div>
+                              ))
+                            : <p className={styles.briefSectionBody}>{renderInlineMarkdown(aiResult.structuredBrief)}</p>
+                          }
+                        </div>
+
+                        <div className={styles.scopingActions}>
+                          <button type="button" className={styles.applyBtn} onClick={applyAiBrief}>
+                            Apply to Form →
+                          </button>
+                          <button type="button" className={styles.dismissBtn} onClick={() => setAiResult(null)}>
+                            Dismiss
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                <div className={styles.sectionDivider} />
+
+                {notice && <p className={styles.formNotice}>{notice}</p>}
+
+                <div className={styles.formActions}>
+                  <button type="submit" className={styles.submitBtn} disabled={submitLoading}>
+                    {submitLoading ? 'Sending…' : 'Send Brief to Artist →'}
+                  </button>
+                  <button type="button" className={styles.cancelBtn} onClick={() => router.back()}>
+                    Cancel
+                  </button>
+                </div>
+
               </form>
             </div>
 
-            {/* Sidebar */}
-            <aside className={styles.sidebar}>
-              <Card padding="medium">
-                <h3 className={styles.sidebarTitle}>Selected Visualizer</h3>
-                
-                <div className={styles.visualizerInfo}>
-                  <div className={styles.visualizerAvatar}>
-                    {visualizer.full_name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className={styles.visualizerName}>{visualizer.full_name}</p>
-                    <p className={styles.visualizerTitle}>{visualizer.state}, {visualizer.country}</p>
-                  </div>
+            {/* RIGHT — ARTIST DOSSIER (4 cols) */}
+            <aside className={styles.dossierCol}>
+
+              <div className={styles.dossierBlock}>
+                <p className={styles.dossierEyebrow}>Selected Artist</p>
+                <p className={styles.dossierName}>{visualizer.full_name}</p>
+                {(visualizer.state || visualizer.country) && (
+                  <p className={styles.dossierLocation}>
+                    {[visualizer.state, visualizer.country].filter(Boolean).join(', ')}
+                  </p>
+                )}
+              </div>
+
+              <div className={styles.dossierDivider} />
+
+              <div className={styles.dossierBlock}>
+                <div className={styles.dossierStat}>
+                  <span className={styles.dossierStatLabel}>Rate Range</span>
+                  <span className={styles.dossierStatValue}>
+                    ${visualizer.min_rate || 0} – ${visualizer.max_rate || 0}/hr
+                  </span>
                 </div>
-                
-                <div className={styles.infoList}>
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Hourly Rate</span>
-                    <span className={styles.infoValue}>${visualizer.max_rate || 0}</span>
+                {visualizer.experience && (
+                  <div className={styles.dossierStat}>
+                    <span className={styles.dossierStatLabel}>Experience</span>
+                    <span className={styles.dossierStatValue}>{visualizer.experience}</span>
                   </div>
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Experience</span>
-                    <span className={styles.infoValue}>{visualizer.experience}</span>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card padding="medium">
-                <h3 className={styles.sidebarTitle}>What Happens Next?</h3>
+                )}
+              </div>
+
+              <div className={styles.dossierDivider} />
+
+              <div className={styles.dossierBlock}>
+                <p className={styles.dossierEyebrow}>What Happens Next</p>
                 <ol className={styles.stepsList}>
-                  <li className={styles.stepsItem}>
-                    {visualizer.full_name} reviews your brief
-                  </li>
-                  <li className={styles.stepsItem}>
-                    You receive a detailed quote
-                  </li>
-                  <li className={styles.stepsItem}>
-                    Approve and secure payment
-                  </li>
-                  <li className={styles.stepsItem}>
-                    Work begins on your project
-                  </li>
+                  <li className={styles.stepsItem}>{visualizer.full_name} reviews your brief</li>
+                  <li className={styles.stepsItem}>You receive a detailed quote</li>
+                  <li className={styles.stepsItem}>Approve and secure payment in escrow</li>
+                  <li className={styles.stepsItem}>Production begins</li>
                 </ol>
-              </Card>
+              </div>
+
             </aside>
+
           </div>
         </div>
       </section>
+
     </Layout>
   );
 }

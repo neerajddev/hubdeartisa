@@ -1,8 +1,6 @@
 .pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 3rem) 0 2.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .pageTitle {
@@ -20,63 +18,154 @@
 }
 
 .section {
-  padding: var(--spacing-xl) 0;
+  padding: var(--spacing-xl) 0 var(--spacing-2xl);
 }
 
-.jobsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-lg);
-}
-
-.jobCard {
-  border: 1px solid var(--color-border);
-  padding: var(--spacing-md);
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+/* ─────────────────────────────────────
+   LEDGER LIST
+───────────────────────────────────── */
+.jobsList {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
 }
 
-.jobTitle {
-  font-size: 1.35rem;
-  margin: 0.35rem 0 0.5rem;
+.jobEntry {
+  border-top: 1px solid var(--color-border-subtle);
+  padding: 2.25rem 0 2.5rem;
+  background: transparent;
+}
+.jobEntry:last-of-type {
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.jobDescription {
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin-bottom: 0.5rem;
-}
-
-.jobMeta {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
-}
-
-.jobActions {
+/* Top row: eyebrow + budget */
+.entryTopRow {
   display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
-@media (max-width: 1024px) {
-  .jobsGrid {
-    grid-template-columns: 1fr;
-  }
+.entryEyebrow {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
 }
 
+.entryBudget {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 0.03em;
+}
+
+/* Main row: content left, sidebar right */
+.entryBody {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ── LEFT: content ── */
+.entryContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.entryTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.entrySection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.entrySectionLabel {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.6;
+  margin: 0;
+}
+
+.entrySectionBody {
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.entryDescription {
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* ── RIGHT: sidebar ── */
+.entrySidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.entryMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.entryMetaLabel {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  opacity: 0.65;
+  margin: 0;
+}
+
+.entryMetaValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.entryActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.entryActions > * {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ─────────────────────────────────────
+   EMPTY STATE
+───────────────────────────────────── */
 .emptyState {
-  border: 1px solid var(--color-border);
-  padding: var(--spacing-lg);
-  text-align: left;
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-xs);
+  border-top: 1px solid var(--color-border-subtle);
+  padding: var(--spacing-lg) 0;
 }
 
 .emptyState h2 {
@@ -86,4 +175,35 @@
 .emptyState p {
   color: var(--color-text-secondary);
   margin-bottom: var(--spacing-sm);
+}
+
+/* ─────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────── */
+@media (max-width: 768px) {
+  .entryBody {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .entrySidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .entryActions {
+    flex-direction: row;
+    width: auto;
+    margin-top: 0;
+  }
+
+  .entryActions > * {
+    width: auto;
+  }
+
+  .entryBudget {
+    font-size: 0.72rem;
+  }
 }

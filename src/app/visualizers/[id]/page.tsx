@@ -141,137 +141,123 @@ export default function VisualizerProfilePage() {
 
   return (
     <Layout>
-      {/* Profile Header */}
+
+      {/* EDITORIAL HEADER */}
       <section className={styles.profileHeader}>
         <div className="container">
           {loading ? (
-            <p>Loading profile...</p>
+            <p className={styles.loadingText}>Loading&hellip;</p>
           ) : (
-          <div className={styles.profileContent}>
-            <div className={styles.profileLeft}>
-              <div className={styles.avatar}>
-                {visualizer?.full_name.charAt(0)}
-              </div>
-              <div className={styles.profileInfo}>
-                <h1 className={styles.name}>{visualizer?.full_name}</h1>
-                <p className={styles.title}>3D Artist</p>
-                <p className={styles.location}>{visualizer?.state}, {visualizer?.country}</p>
-                <div className={styles.stats}>
-                  <div className={styles.statItem}>
-                    <span className={styles.statValue}>{visualizer?.experience}</span>
-                    <span className={styles.statLabel}>experience</span>
-                  </div>
+            <div className={styles.headerInner}>
+              <div className={styles.headerLeft}>
+                <div className={styles.avatarSmall}>
+                  {visualizer?.full_name.charAt(0)}
+                </div>
+                <div>
+                  <p className={styles.headerEyebrow}>3D Artist</p>
+                  <h1 className={styles.name}>{visualizer?.full_name}</h1>
+                  <p className={styles.headerMeta}>
+                    {visualizer?.state}, {visualizer?.country}&ensp;&middot;&ensp;{visualizer?.experience}
+                  </p>
                 </div>
               </div>
-            </div>
-            
-            <div className={styles.profileRight}>
               {role !== 'artist' && (
-                <Button 
-                  size="large" 
-                  fullWidth 
-                  onClick={handleHire}
-                >
-                  Hire Now
-                </Button>
+                <div className={styles.headerCta}>
+                  <Button size="large" onClick={handleHire}>Hire Now</Button>
+                </div>
               )}
             </div>
-          </div>
           )}
         </div>
       </section>
 
-      {/* About */}
+      {/* BIO & DETAILS */}
       <section className={styles.section}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>About</h2>
-          <p className={styles.bio}>{visualizer?.bio}</p>
-          
-          <div className={styles.specialtiesSection}>
-            <h3 className={styles.subsectionTitle}>Specialties</h3>
-            <div className={styles.specialties}>
-              {visualizer?.specialties?.map((specialty, index) => (
-                <span key={index} className={styles.specialty}>
-                  {specialty}
-                </span>
-              ))}
+          <div className={styles.sectionBody}>
+            {visualizer?.bio && (
+              <p className={styles.bio}>{visualizer.bio}</p>
+            )}
+            <div className={styles.metaRow}>
+              <div className={styles.metaBlock}>
+                <p className={styles.metaLabel}>Specialties</p>
+                <p className={styles.metaValue}>
+                  {visualizer?.specialties?.join(', ') || '—'}
+                </p>
+              </div>
+              <div className={styles.metaBlock}>
+                <p className={styles.metaLabel}>Languages</p>
+                <p className={styles.metaValue}>{visualizer?.languages || 'English'}</p>
+              </div>
             </div>
-          </div>
-
-          <div className={styles.languagesSection}>
-            <h3 className={styles.subsectionTitle}>Languages</h3>
-            <p className={styles.languages}>{visualizer?.languages || 'English'}</p>
           </div>
         </div>
       </section>
 
+      {/* PORTFOLIO GRID */}
       <section className={styles.section}>
         <div className="container">
           <h2 className={styles.sectionTitle}>Work</h2>
-          {portfolio.length === 0 && <p>No work uploaded yet.</p>}
+          {portfolio.length === 0 && (
+            <p className={styles.emptyText}>No work uploaded yet.</p>
+          )}
           <div className={styles.portfolioGrid}>
-            {portfolio.map((item) => (
-              <div key={item.id} className={styles.portfolioItem}>
-                <button
-                  type="button"
-                  className={styles.portfolioImage}
-                  onClick={() => setActiveIndex(portfolio.findIndex((p) => p.id === item.id))}
-                >
-                  <img src={item.image_url} alt={item.title} />
-                </button>
-              </div>
+            {portfolio.map((item, i) => (
+              <button
+                key={item.id}
+                type="button"
+                className={styles.portfolioItem}
+                onClick={() => setActiveIndex(i)}
+                aria-label={`View ${item.title}`}
+              >
+                <img
+                  src={item.image_url}
+                  alt={item.title}
+                  className={styles.portfolioImg}
+                />
+                {item.category && (
+                  <span className={styles.portfolioCategory}>{item.category}</span>
+                )}
+              </button>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className={styles.section}>
-        <div className="container">
-          <h2 className={styles.sectionTitle}>Pricing</h2>
-          {rates.length === 0 ? (
-            <p>No rates set yet.</p>
-          ) : (
-            <div className={styles.ratesTable}>
-              <div className={styles.ratesHeader}>
-                <span>Specialty</span>
-                <span>Rate Type</span>
-                <span>Range (USD)</span>
-              </div>
+      {/* PRICING MENU */}
+      {rates.length > 0 && (
+        <section className={styles.section}>
+          <div className="container">
+            <h2 className={styles.sectionTitle}>Pricing</h2>
+            <div className={styles.ratesMenu}>
               {rates.map((rate) => (
-                <div key={rate.id} className={styles.ratesRow}>
-                  <span className={styles.rateSpecialty}>{rate.specialty}</span>
+                <div key={rate.id} className={styles.rateRow}>
+                  <span className={styles.rateService}>{rate.specialty}</span>
                   <span className={styles.rateType}>{rate.rate_type}</span>
-                  <span className={styles.rateRange}>
-                    ${rate.min_price} - ${rate.max_price}
-                  </span>
+                  <span className={styles.ratePrice}>${rate.min_price.toLocaleString()} &ndash; ${rate.max_price.toLocaleString()}</span>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
+      {/* LIGHTBOX */}
       {activeIndex !== null && portfolio[activeIndex] && (
         <div className={styles.lightbox} onClick={() => setActiveIndex(null)}>
-          <div className={styles.lightboxContent} onClick={(event) => event.stopPropagation()}>
-            <button className={styles.lightboxClose} onClick={() => setActiveIndex(null)}>
-              ×
-            </button>
-            <button className={styles.lightboxNavLeft} onClick={handlePrev}>
-              ‹
-            </button>
+          <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.lightboxClose} onClick={() => setActiveIndex(null)}>×</button>
+            <button className={styles.lightboxNavLeft} onClick={handlePrev}>‹</button>
             <img
               src={portfolio[activeIndex].image_url}
               alt="Work preview"
               className={styles.lightboxImage}
             />
-            <button className={styles.lightboxNavRight} onClick={handleNext}>
-              ›
-            </button>
+            <button className={styles.lightboxNavRight} onClick={handleNext}>›</button>
           </div>
         </div>
       )}
+
     </Layout>
   );
 }

@@ -1,193 +1,225 @@
+/* ═══════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════════ */
 .pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 3rem) 0 2.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.backButton {
+.backLink {
+  display: inline-block;
   background: transparent;
   border: none;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--color-text-secondary);
   cursor: pointer;
-  margin-bottom: var(--spacing-sm);
+  padding: 0;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
 }
 
-.pageTitle {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-sm);
-  text-align: left;
-}
+.backLink:hover { color: var(--color-primary); }
 
-.pageDescription {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  text-align: left;
-  max-width: 800px;
-  line-height: 1.7;
-}
-
-.messageButton {
-  margin-top: var(--spacing-sm);
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: var(--shadow-xs);
-}
-
-.section {
-  padding: var(--spacing-xl) 0;
-}
-
-.notice {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-md);
-}
-
-.quoteGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-lg);
-}
-
-.quoteCard {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-}
-
-.quoteBadge {
+.eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.35rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  background: var(--color-surface-muted);
-}
-
-.quoteMain {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: 0.5rem 0;
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.quoteArtist {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 0.25rem;
-}
-
-.quoteAmount {
-  font-size: 2rem;
+  color: var(--color-accent);
   margin: 0 0 0.5rem;
 }
 
-.quoteMeta {
-  color: var(--color-text-secondary);
-  margin-bottom: 0.35rem;
-}
-
-.quoteNotes {
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  background: var(--color-surface-muted);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: var(--spacing-sm);
-}
-
-.quoteNotes h4 {
-  margin: 0 0 0.4rem;
-  color: var(--color-text-primary);
-  font-size: 0.9rem;
-}
-
-.serviceList {
-  background: var(--color-surface-muted);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: var(--spacing-sm);
-}
-
-.serviceList h4 {
-  margin: 0 0 0.4rem;
-  font-size: 0.9rem;
-}
-
-.serviceList ul {
-  margin: 0;
-  padding-left: 1.1rem;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-}
-
-.downloadLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
+.pageTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-weight: 800;
   color: var(--color-primary);
-  font-weight: 600;
-  text-decoration: none;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 0 1.25rem;
 }
 
-.cardActions {
+.headerMeta {
   display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
 }
 
-.primaryButton {
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.25rem;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: var(--shadow-xs);
+.metaHint {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
 }
 
-.ghostButton {
+.messagesLink {
   background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-  padding: 0.6rem 1.25rem;
-  border-radius: 12px;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
   cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.messagesLink:hover { color: var(--color-primary); }
+
+/* ═══════════════════════════════════════════
+   SECTION
+══════════════════════════════════════════════ */
+.section {
+  padding: 3rem 0 5rem;
+}
+
+.notice {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* ═══════════════════════════════════════════
+   QUOTE LIST — editorial rows
+══════════════════════════════════════════════ */
+.quoteList {
+  display: flex;
+  flex-direction: column;
 }
 
 .emptyState {
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
-  background: var(--color-surface-muted);
-  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  padding: 3rem 0;
+  font-style: italic;
 }
 
-@media (max-width: 1024px) {
-  .quoteGrid {
-    grid-template-columns: 1fr;
+.quoteRow {
+  display: grid;
+  grid-template-columns: 200px 140px 1fr auto;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background 0.15s;
+}
+
+.quoteRow:first-of-type {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* Artist block */
+.artistName {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+  margin: 0 0 0.2rem;
+}
+
+.artistLocation {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Price block */
+.quoteAmount {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.2rem;
+}
+
+.quoteSub {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Services */
+.quoteServices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.serviceTag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+}
+
+/* Notes — shown below the row as a subtle line */
+.quoteNotes {
+  grid-column: 1 / -1;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  line-height: 1.7;
+  padding-top: 0;
+  margin-top: -1rem;
+}
+
+/* Actions */
+.quoteActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.65rem;
+}
+
+.selectBtn {
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: filter 0.2s;
+  white-space: nowrap;
+}
+
+.selectBtn:hover { filter: brightness(1.12); }
+
+.pdfLink {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.pdfLink:hover { color: var(--color-primary); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .quoteRow {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
   }
+  .quoteActions { align-items: flex-start; }
+}
+
+@media (max-width: 600px) {
+  .quoteRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .headerMeta { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 }

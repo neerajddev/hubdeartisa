@@ -1,8 +1,6 @@
 .pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 3rem) 0 2.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .pageTitle {
@@ -34,11 +32,6 @@
 
 .mainContent {
   width: 100%;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
 }
 
 /* Form */
@@ -56,11 +49,10 @@
 
 /* Security Notice */
 .securityNotice {
-  padding: var(--spacing-sm);
-  background-color: var(--color-surface-muted);
-  border: 1px solid var(--color-border);
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: var(--spacing-sm);
-  border-radius: 12px;
 }
 
 .securityText {
@@ -88,11 +80,8 @@
   gap: var(--spacing-sm);
   position: sticky;
   top: 100px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
+  border-left: 1px solid var(--color-border-subtle);
+  padding-left: var(--spacing-md);
 }
 
 .sidebarTitle {

@@ -1,0 +1,254 @@
+/* TopNav — fixed glass header */
+.topNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 64px;
+  gap: 1.5rem;
+}
+
+/* ── Left: Logo ── */
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+  opacity: 0.75;
+}
+
+.logoApostrophe {
+  color: var(--color-accent);
+}
+
+.logoHub {
+  color: var(--color-accent);
+}
+
+/* ── Center: Nav Links ── */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.navLink {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 0.45rem 0.875rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: var(--color-primary);
+  background: rgba(9, 43, 47, 0.06);
+}
+
+.navLinkActive {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Right: Actions ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.signInLink {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.signInLink:hover {
+  opacity: 0.65;
+}
+
+.dashboardLink {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.dashboardLink:hover {
+  opacity: 0.65;
+}
+
+.signOutBtn {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.signOutBtn:hover {
+  color: var(--color-primary);
+}
+
+.applyBtn {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 0.575rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-primary);
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 8px rgba(9, 43, 47, 0.18);
+}
+
+.applyBtn:hover {
+  filter: brightness(0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(9, 43, 47, 0.25);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .inner {
+    padding: 0 1rem;
+    height: 56px;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .signInLink {
+    font-size: 0.8rem;
+  }
+
+  .applyBtn {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.875rem;
+  }
+
+  .dropdownTrigger {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.7rem;
+  }
+}
+
+/* ── Dropdown ── */
+.dropdown {
+  position: relative;
+}
+
+.dropdownTrigger {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.dropdownTrigger:hover {
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+.dropdownCaret {
+  font-size: 0.58rem;
+  opacity: 0.55;
+  transition: transform 0.18s;
+  display: inline-block;
+}
+.dropdownCaretOpen {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 210px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.dropdownItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  text-decoration: none;
+  color: var(--color-primary);
+  transition: background 0.15s;
+}
+.dropdownItem:hover {
+  background: var(--color-surface-muted);
+}
+.dropdownItemLast {
+  border-bottom: none;
+}
+
+.dropdownItemTitle {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.dropdownItemSub {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}

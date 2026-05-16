@@ -1,364 +1,250 @@
-.pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+/* ═══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════ */
+.dashHeader {
+  padding: calc(var(--nav-height) + 3.5rem) 0 3rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.pageTitle {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-sm);
-  text-align: left;
-}
-
-.pageDescription {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  text-align: left;
-  max-width: 800px;
-  line-height: 1.7;
-}
-
-.section {
-  padding: var(--spacing-xl) 0;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-}
-
-.statCard {
-  background: #fff;
-  border: 1px solid var(--color-border);
-  padding: var(--spacing-md);
-  border-radius: 16px;
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
-}
-
-.statLabel {
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  margin-bottom: var(--spacing-sm);
-}
-
-.statValueRow {
+.headerRow {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: 2rem;
 }
 
-.statValue {
-  font-size: 2rem;
+.eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 0 0 0.5rem;
+}
+
+.dashTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
   margin: 0;
+  line-height: 1.1;
 }
 
-.statChange {
-  font-size: 0.85rem;
-  color: #1f9d68;
-  background: rgba(31, 157, 104, 0.12);
-  padding: 0.2rem 0.5rem;
-  border-radius: 999px;
-}
-
-.mainLayout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: var(--spacing-xl);
-  align-items: start;
-}
-
-.mainContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.sectionHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--spacing-lg);
-}
-
-.sectionTitle {
-  margin: 0 0 0.35rem;
-  font-size: 1.75rem;
-}
-
-.sectionSubtitle {
-  margin: 0;
-  color: var(--color-text-secondary);
-  max-width: 560px;
-  line-height: 1.6;
-}
-
-.filterRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.filterChip {
-  border: 1px solid var(--color-border);
-  background: #fff;
-  color: var(--color-text-secondary);
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.projectGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-lg);
-}
-
-.projectCard {
-  background: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
-  overflow: hidden;
-  display: grid;
-  grid-template-rows: 160px 1fr;
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
-}
-
-.thumbnail {
-  position: relative;
-  padding: var(--spacing-md);
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-}
-
-.statusPill {
-  font-size: 0.75rem;
-  font-weight: 600;
+.newProjectBtn {
+  flex-shrink: 0;
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
   letter-spacing: 0.02em;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(6px);
-}
-
-.statusActive {
-  color: #2563eb;
-}
-
-.statusReview {
-  color: #9333ea;
-}
-
-.statusCompleted {
-  color: #16a34a;
-}
-
-.statusDraft {
-  color: #64748b;
-}
-
-.projectBody {
-  padding: var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.projectHeader {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-}
-
-.projectCategory {
-  margin: 0 0 0.25rem;
-  color: var(--color-text-secondary);
-  font-size: 0.85rem;
-}
-
-.projectTitle {
-  margin: 0;
-  font-size: 1.15rem;
-}
-
-.projectId {
-  color: var(--color-text-secondary);
-  font-size: 0.85rem;
-  margin: 0;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: filter 0.2s;
   white-space: nowrap;
 }
 
-.progressRow {
-  display: flex;
+.newProjectBtn:hover {
+  filter: brightness(1.12);
+}
+
+/* ═══════════════════════════════════════════
+   PROJECT LIST
+══════════════════════════════════════════════ */
+.listSection {
+  padding: 3rem 0 6rem;
+}
+
+.projectList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.projectRow {
+  display: grid;
+  grid-template-columns: 1fr 160px 160px;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 2rem;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background 0.15s;
 }
 
-.progressTrack {
-  flex: 1;
-  height: 6px;
-  background: var(--color-border-subtle);
-  border-radius: 999px;
-  overflow: hidden;
+.projectRow:first-child {
+  border-top: 1px solid var(--color-border-subtle);
 }
 
-.progressFill {
-  height: 100%;
-  background: var(--color-primary);
-  border-radius: inherit;
+.rowLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
-.progressValue {
+.projectName {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.projectDate {
   font-size: 0.8rem;
   color: var(--color-text-secondary);
 }
 
-.projectMeta {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) 0;
-  border-top: 1px solid var(--color-border-subtle);
-  border-bottom: 1px solid var(--color-border-subtle);
+.rowMiddle {
+  text-align: center;
 }
 
-.metaLabel {
-  margin: 0;
-  font-size: 0.75rem;
+.projectStatus {
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
 }
 
-.metaValue {
-  margin: 0.15rem 0 0;
-  font-weight: 600;
+.rowRight {
+  text-align: right;
 }
 
-.projectActions {
-  display: flex;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
+.workspaceLink {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s;
 }
 
-.primaryButton {
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
+.workspaceLink:hover {
+  opacity: 0.6;
 }
 
-.ghostButton {
-  background: transparent;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  padding: 0.6rem 1.1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
+/* ═══════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════════ */
+.emptyState {
+  padding: 5rem 0;
 }
 
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+.emptyTitle {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 0.5rem;
 }
 
-.sidebarCard {
-  background: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: var(--spacing-md);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.sidebarTitle {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.primaryButtonFull {
-  width: 100%;
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  padding: 0.75rem 1.1rem;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.secondaryButtonFull {
-  width: 100%;
-  background: #fff;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  padding: 0.7rem 1.1rem;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.snapshotItem {
-  display: flex;
-  justify-content: space-between;
-  color: var(--color-text-secondary);
+.hint {
   font-size: 0.9rem;
-}
-
-.snapshotItem strong {
-  color: var(--color-text-primary);
-}
-
-.sidebarList {
-  margin: 0;
-  padding-left: 1.2rem;
   color: var(--color-text-secondary);
-  display: grid;
-  gap: 0.65rem;
+  margin: 0;
+  line-height: 1.7;
 }
 
-@media (max-width: 1200px) {
-  .mainLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .sidebarCard {
-    flex: 1 1 280px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .statsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .projectGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .sectionHeader {
-    flex-direction: column;
-  }
-
-  .statValueRow {
+  .headerRow {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .newProjectBtn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .projectRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1.25rem 0;
+  }
+
+  .rowMiddle,
+  .rowRight {
+    text-align: left;
+  }
+}
+
+/* ── Status filter ── */
+.filterBar {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.filterBtn {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.75rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.filterBtnActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* ── Filter + Search row ── */
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+/* override filterBar margin so filterRow owns it */
+.filterRow .filterBar {
+  margin-bottom: 0;
+}
+
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.searchIcon {
+  width: 15px;
+  height: 15px;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0;
+  padding: 0.3rem 0 0.35rem;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  color: var(--color-primary);
+  outline: none;
+  width: 180px;
+  transition: border-color 0.2s, width 0.25s;
+}
+.searchInput::placeholder { color: var(--color-text-secondary); opacity: 0.55; }
+.searchInput:focus {
+  border-bottom-color: var(--color-primary);
+  width: 220px;
 }

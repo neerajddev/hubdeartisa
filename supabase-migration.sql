@@ -5,6 +5,13 @@
 ALTER TABLE artist_profiles ADD COLUMN IF NOT EXISTS min_rate INTEGER DEFAULT 0;
 ALTER TABLE artist_profiles ADD COLUMN IF NOT EXISTS max_rate INTEGER DEFAULT 0;
 
+-- Add company column to client_profiles (used by Client Settings page)
+ALTER TABLE client_profiles ADD COLUMN IF NOT EXISTS company TEXT;
+
+-- Escrow tracking on projects
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS escrow_funded BOOLEAN DEFAULT FALSE;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS client_signed_at TIMESTAMP WITH TIME ZONE;
+
 -- Create artist portfolio table if missing
 CREATE TABLE IF NOT EXISTS artist_portfolio (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -425,3 +432,47 @@ BEGIN
 END $$;
 
 CREATE INDEX IF NOT EXISTS idx_project_messages_project_id ON project_messages(project_id);
+
+-- ═══════════════════════════════════════════════════════════════
+-- project_files: Cloudinary deliverable uploads by artists
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS project_files (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id    UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  artist_id     UUID NOT NULL REFERENCES artist_profiles(id),
+  secure_url    TEXT NOT NULL,
+  resource_type TEXT NOT NULL DEFAULT 'image',
+  file_name     TEXT,
+  file_stage    TEXT NOT NULL DEFAULT 'preview',  -- 'preview' | 'final'
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Add file_stage column if table already exists
+ALTER TABLE project_files ADD COLUMN IF NOT EXISTS file_stage TEXT NOT NULL DEFAULT 'preview';
+
+ALTER TABLE project_files ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE tablename = 'project_files' AND policyname = 'project_files_select'
+  ) THEN
+    CREATE POLICY project_files_select ON project_files FOR SELECT USING (
+      auth.uid() IN (
+        SELECT user_id FROM artist_profiles WHERE artist_profiles.id = project_files.artist_id
+        UNION
+        SELECT user_id FROM client_profiles WHERE client_profiles.id = (SELECT client_id FROM projects WHERE projects.id = project_files.project_id)
+      )
+    );
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE tablename = 'project_files' AND policyname = 'project_files_insert'
+  ) THEN
+    CREATE POLICY project_files_insert ON project_files FOR INSERT WITH CHECK (
+      auth.uid() IN (
+        SELECT user_id FROM artist_profiles WHERE artist_profiles.id = project_files.artist_id
+      )
+    );
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_project_files_project_id ON project_files(project_id);

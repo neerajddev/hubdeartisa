@@ -29,22 +29,39 @@ export async function POST(request: Request) {
       .eq('project_id', projectId)
       .eq('order_id', orderId);
 
-    await supabaseAdmin
-      .from('projects')
-      .update({ status: 'in_progress' })
-      .eq('id', projectId);
-
+    // Resolve the selected quote's artist_id so we can assign them atomically.
     const { data: project } = await supabaseAdmin
       .from('projects')
-      .select('selected_artist_id')
+      .select('selected_quote_id')
       .eq('id', projectId)
       .single();
 
-    if (project?.selected_artist_id) {
+    let resolvedArtistId: string | null = null;
+    if (project?.selected_quote_id) {
+      const { data: quote } = await supabaseAdmin
+        .from('project_quotes')
+        .select('artist_id')
+        .eq('id', project.selected_quote_id)
+        .single();
+      resolvedArtistId = quote?.artist_id ?? null;
+    }
+
+    // Only now — after confirmed payment — do we assign the artist and advance status.
+    await supabaseAdmin
+      .from('projects')
+      .update({
+        status: 'assigned',
+        escrow_funded: true,
+        client_signed_at: new Date().toISOString(),
+        ...(resolvedArtistId ? { selected_artist_id: resolvedArtistId } : {}),
+      })
+      .eq('id', projectId);
+
+    if (resolvedArtistId) {
       const { data: artist } = await supabaseAdmin
         .from('artist_profiles')
         .select('user_id, email, phone')
-        .eq('id', project.selected_artist_id)
+        .eq('id', resolvedArtistId)
         .single();
 
       if (artist?.user_id) {
@@ -56,7 +73,7 @@ export async function POST(request: Request) {
             userId: artist.user_id,
             email: artist.email,
             whatsapp: artist.phone,
-            message: 'Client payment received. You can start work on the project.',
+            message: 'Client payment received and you have been selected. Please review and accept the project agreement in your dashboard.',
           }),
         });
       }

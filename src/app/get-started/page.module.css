@@ -1,8 +1,6 @@
 .pageHeader {
-  padding: var(--spacing-lg) 0;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-xs);
+  padding: calc(var(--nav-height) + 3rem) 0 2.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .backBar {
@@ -53,10 +51,7 @@
   flex-direction: column;
   padding: var(--spacing-md);
   min-height: 500px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .optionIcon {
@@ -67,7 +62,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,7 +70,6 @@
   font-size: 2rem;
   font-weight: 700;
   color: var(--color-background);
-  border: 3px solid rgba(189, 173, 157, 0.3);
 }
 
 .optionTitle {
@@ -130,21 +124,19 @@
   padding: 1rem 2rem;
   background-color: var(--color-primary);
   color: var(--color-background);
-  border: 2px solid var(--color-primary);
+  border: none;
   font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: filter 0.2s;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-radius: 999px;
-  box-shadow: var(--shadow-xs);
+  border-radius: 8px;
 }
 
 .btnPrimary:hover {
-  background-color: transparent;
-  color: var(--color-primary);
+  filter: brightness(1.12);
 }
 
 .signInSection {

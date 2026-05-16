@@ -49,6 +49,7 @@ export const ROUTES = {
   artistDashboard: '/dashboard/artist',
   jobs: '/jobs',
   clientProjects: '/dashboard/client/projects',
+  clientProjectWorkspace: (id: string) => `/dashboard/client/projects/${id}`,
   newClientProject: '/dashboard/client/projects/new',
   clientProjectQuotes: (id: string) => `/dashboard/client/projects/${id}/quotes`,
   clientProjectAgreement: (id: string) => `/dashboard/client/projects/${id}/agreement`,
@@ -57,4 +58,8 @@ export const ROUTES = {
   jobDetail: (id: string) => `/jobs/${id}`,
   artistAgreement: (id: string) => `/dashboard/artist/jobs/${id}/agreement`,
   artistJobMessages: (id: string) => `/dashboard/artist/jobs/${id}/messages`,
+  artistJobWorkspace: (id: string) => `/dashboard/artist/jobs/${id}`,
+  artistBrowse: '/dashboard/artist/browse',
+  artistPortfolio: '/dashboard/artist/portfolio',
+  artistSettings: '/dashboard/artist/settings',
 };

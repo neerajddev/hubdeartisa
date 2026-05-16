@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '@/components/Sidebar/Sidebar';
+import TopNav from '@/components/TopNav/TopNav';
 import Footer from '@/components/Footer/Footer';
 import styles from './Layout.module.css';
 
@@ -10,7 +10,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     <div className={styles.layoutWrapper}>
-      <Sidebar />
+      <TopNav />
       <div className={styles.mainWrapper}>
         <main className={styles.mainContent}>{children}</main>
         <Footer />

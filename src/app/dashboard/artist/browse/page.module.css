@@ -1,0 +1,186 @@
+/* ═══════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════════ */
+.pageHeader {
+  padding: calc(var(--nav-height) + 3rem) 0 3rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 0 0 0.75rem;
+}
+
+.pageTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 0 1rem;
+}
+
+.pageSubtitle {
+  font-size: 1.0625rem;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  margin: 0;
+  max-width: 560px;
+}
+
+/* ═══════════════════════════════════════════
+   LEDGER
+══════════════════════════════════════════════ */
+.ledgerSection {
+  padding: 3rem 0 6rem;
+}
+
+.ledgerHeader {
+  display: grid;
+  grid-template-columns: 150px 1fr 110px 120px 140px;
+  gap: 1.5rem;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ledgerHeader span {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.ledgerRow {
+  display: grid;
+  grid-template-columns: 150px 1fr 110px 120px 140px;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background 0.15s;
+}
+
+/* ── Columns ── */
+.colClient {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  line-height: 1.4;
+}
+
+.colBrief {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.briefTitle {
+  font-size: 0.975rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.briefPreview {
+  font-size: 0.84rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.categoryTag {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-top: 0.1rem;
+}
+
+.colBudget {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.colDeadline {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.colAction {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── Quote Button ── */
+.quoteBtn {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter 0.2s;
+}
+
+.quoteBtn:hover {
+  filter: brightness(1.12);
+}
+
+/* ── States ── */
+.hint,
+.emptyState {
+  padding: 3rem 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .ledgerHeader {
+    display: none;
+  }
+
+  .ledgerRow {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0.4rem 1rem;
+    padding: 1.25rem 0;
+  }
+
+  .colBrief {
+    grid-column: 1 / -1;
+  }
+
+  .colAction {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ledgerRow {
+    grid-template-columns: 1fr;
+  }
+}
