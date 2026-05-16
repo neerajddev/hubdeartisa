@@ -15,7 +15,7 @@ interface OpenProject {
   budget_max: number | null;
   deadline: string | null;
   created_at: string;
-  client_profiles: { full_name: string | null } | null;
+  client_profiles: { full_name: string | null }[] | null;
 }
 
 export default function ArtistBrowsePage() {
@@ -83,7 +83,7 @@ export default function ArtistBrowsePage() {
             return (
               <div key={p.id} className={styles.ledgerRow}>
                 <span className={styles.colClient}>
-                  {p.client_profiles?.full_name ?? 'Client'}
+                  {p.client_profiles?.[0]?.full_name ?? 'Client'}
                 </span>
 
                 <div className={styles.colBrief}>
